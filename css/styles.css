@@ -52,8 +52,8 @@ body {
 
 .nav {
     position: relative;
-    left: 25%;
-    max-width: 50%;
+    left: 20%;
+    max-width: 60%;
     padding: 0;
 }
 
@@ -79,7 +79,6 @@ body {
     padding: 3px 40px;
     color: black;
     text-decoration: none;
-
 }
 
 .menu > li > a:hover {
@@ -177,9 +176,20 @@ body {
   height: auto;
 }
 
+.sep {
+  position: relative;
+  margin-top: 10px;
+  right: 60%;
+}
+
+.tecnm {
+  position: relative;
+  left: 128%;
+}
+
 .flotantes-inferiores {
   position: absolute;
-  top: 210px;
+  top: 350px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;

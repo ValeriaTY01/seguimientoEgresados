@@ -32,10 +32,20 @@ $menus = [
             ['SOPORTE TÉCNICO', 'admin/soporte.php']
         ]
     ],
-    'Jefe departamento' => [  // notar minúscula en 'departamento'
+    'Jefe departamento' => [
+        'GESTIÓN ACADÉMICA' => [
+            ['DIRECTORIO DE EGRESADOS', 'jefe/egresados.php'],
+            ['INTEGRACIÓN DE DATOS (EXCEL)', 'jefe/importar.php'],
+            ['DESCARGA DE INFORMACIÓN', 'jefe/exportar.php']
+        ],
+        'ANÁLISIS DE ENCUESTAS' => [
+            ['VISUALIZACIÓN DE RESULTADOS', 'jefe/resultados.php'],
+            ['ESTADO DE PARTICIPACIÓN', 'jefe/estado_encuestas.php'],
+            ['PERIODOS DE LEVANTAMIENTO', 'jefe/periodos.php']
+        ],
         'REPORTES' => [
-            ['REPORTES POR CARRERA', 'jefe/reportes.php'],
-            ['CENSOS POR PERIODO', 'jefe/censos.php']
+            ['GENERACIÓN DE INFORMES', 'jefe/reportes.php'],
+            ['HISTORIAL DE CONSULTAS', 'jefe/historial.php']
         ]
     ],
     'Jefe vinculación' => [
