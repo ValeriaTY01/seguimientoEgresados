@@ -1,0 +1,282 @@
+/* Reset mínimo */
+* { box-sizing: border-box; margin:0; padding:0; }
+
+/* Contenedor general */
+.encuesta-page {
+    font-family: Verdana, sans-serif;
+    background: #f4f6f8;
+    min-height: 50vh;
+    padding-bottom: 760px;
+}
+
+/* Header de la página */
+.encuesta-header {
+    background: #004B82;
+    color: #fff;
+    text-align: center;
+    padding: 20px 7px;
+
+}
+.encuesta-header h1 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.encuesta-header .subtitulo {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+/* Modal de bienvenida */
+.modal {
+    color: #333;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    z-index: 1000;
+    font-size: 14px;
+    font-weight: bold;
+}
+.bienvenida-dialog {
+    position: relative;
+    padding: 30px 40px 20px;
+    max-width: 600px;
+    background: #fff;
+    border-radius: 8px;
+    text-align: left;
+} 
+.bienvenida-logo {
+    position: absolute;
+    top: 40px;
+    right: 50px;
+    height: 60px;
+}
+.bienvenida-body p {
+    color: #333;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    margin:10px;
+}
+.modal-close {
+    position: absolute; 
+    top:10px; 
+    right:10px;
+    background: none; 
+    border:none;
+    font-size: 1.5rem; 
+    cursor: pointer;
+}
+.modal-body h2 {
+    color: #004B82;
+    margin-bottom: 20px;
+    margin:10px;
+}
+.texto-modal {
+    color: #333;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+    font-size: 12px;
+}
+
+/* Botones */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.modal .btn-primary{
+    margin-left: 200px;
+}
+
+.btn-primary {
+    background: #FFCC00;
+    color: #004B82;
+    margin-top: 20px;
+}
+.btn-primary:hover {
+    background: #e6b800;
+}
+
+/* Main content */
+.encuesta-main {
+    max-width: 1000px;
+    margin: 40px auto 60px; 
+    color: black;
+}
+
+/* Tarjeta de datos */
+.card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 50px;
+}
+.card h2 {
+    margin-bottom: 20px;
+    color: #004B82;
+    font-size: 1.5rem;
+    border-bottom: 2px solid #FFCC00;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+/* Formulario en grid */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+.form-grid label {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.9rem;
+}
+.form-grid input,
+.form-grid select {
+    margin-top: 6px;
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.instrucciones-card {
+    margin:30px;
+  }
+.instrucciones-card h2 {
+    color: #004B82;
+    margin-bottom: 1rem;
+}
+.lista-instrucciones {
+    text-align: justify;
+    line-height: 1.4;
+    color: black;
+    font-size: 13px;
+    
+}  
+
+/* Responsive */
+@media (max-width: 600px) {
+  .encuesta-header {
+    padding: 30px 10px;
+  }
+  .card h2 {
+    font-size: 1.25rem;
+  }
+}
+
+/* Estilo general para la tarjeta */
+.datos-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin-bottom: 30px;
+  }
+  
+  /* Título elegante */
+  .datos-card h2 {
+    text-align: center;
+    color: #003366;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+    font-weight: bold;
+  }
+  
+  /* Grid responsive para los inputs */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  /* Etiquetas de los campos */
+  .form-grid label {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  /* Inputs y selects */
+  .form-grid input,
+  .form-grid select {
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border 0.3s ease;
+  }
+  
+  .form-grid input:focus,
+  .form-grid select:focus {
+    border-color: #003366;
+    outline: none;
+  }
+  
+  /* Botón */
+  button.btn-primary {
+    margin-top: 30px;
+    padding: 12px 24px;
+    font-size: 16px;
+    background-color: #003366;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    transition: background-color 0.3s ease;
+  }
+  
+  button.btn-primary:hover {
+    background-color: #00509e;
+  }
+
+  .mensaje-final {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 40px;
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  .mensaje-final h2 {
+    color: #343a40;
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
+  
+  .mensaje-final p {
+    font-size: 18px;
+    color: #6c757d;
+    margin-bottom: 25px;
+  }
+  
+  .mensaje-final .btn {
+    background-color: #0069d9;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+  
+  .mensaje-final .btn:hover {
+    background-color: #0053ba;
+  }
+  
+

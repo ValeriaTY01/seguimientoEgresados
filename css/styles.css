@@ -1,0 +1,227 @@
+@font-face {
+  font-family: 'Verdana';
+  src: local('Verdana'), sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #e9e9e9;
+  font-family: 'Verdana', sans-serif;
+}
+
+.encabezado {
+  background-color: #004B82;
+  height: 108px;
+  color: white;
+  text-align: center;
+  padding-bottom: 2px;
+  position: relative;
+}
+
+.logo {
+  position: absolute;
+  top: 7px;
+  left: 260px;
+}
+
+.logo img {
+  height: 70px;
+}
+
+.titulo {
+  padding-top: 12px;
+}
+
+.titulo .linea1 {
+  font-size: 17px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.titulo .linea1 .amarillo {
+  color: #FFCC00;
+}
+
+.titulo .linea2,
+.titulo .linea3 {
+  font-size: 17px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.nav {
+    position: relative;
+    left: 25%;
+    max-width: 50%;
+    padding: 0;
+}
+
+.menu {
+    list-style: none;
+    margin: 12px;
+    padding: 0;
+    display: flex;
+    background-color:  #d5d5d5;
+    justify-content: center;
+    font-size: 10.5px;
+    font-weight: bold;
+    border: 1px solid #fff;
+    border-radius: 5px;
+}
+
+.menu > li {
+    position: relative;
+}
+
+.menu > li > a {
+    display: block;
+    padding: 3px 40px;
+    color: black;
+    text-decoration: none;
+
+}
+
+.menu > li > a:hover {
+    color: #0055aa;
+}
+
+.menu li:not(:last-child)::after {
+  content: "|";
+  color: black;
+  position: absolute;
+  left: 100%;
+  bottom: 20%;
+}
+
+.submenu-items {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #004B82;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    min-width: 200px;
+    z-index: 999;
+    border: 2px solid #fff;
+}
+
+.submenu-items li a {
+    display: block;
+    padding: 10px 15px;
+    color: white;
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid #fff;
+}
+
+.submenu-items li a:hover {
+    background-color: #d5d5d5;
+    color: #004B82;
+}
+
+.submenu:hover .submenu-items {
+    display: block;
+}
+
+.contenido-principal {
+  position: relative;
+  text-align: center;
+  margin-top: 50px;
+}
+
+.botones-flotantes {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 3;
+}
+
+.boton-amarillo {
+  background-color: #FFEB99;
+  color: #004B82;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: 2px solid #c4b961;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.boton-blanco {
+  background-color: white;
+  color: #004B82;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: 2px solid #004B82;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.logo-centro {
+  position: fixed;
+  top: 210px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: -1; /* Detrás de todo */
+  pointer-events: none; /* No interfiere con clics */
+}
+
+.logo-centro img {
+  max-width: 300px;
+  height: auto;
+}
+
+.flotantes-inferiores {
+  position: absolute;
+  top: 210px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 3;
+}
+
+.anuncios, .quejas {
+  background-color: #004B82;
+  color: white;
+  width: 630px;
+  border-radius: 2px;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  padding: 4px 0;
+  border: 2px solid #fff;
+}
+
+.quejas {
+  margin: 10px
+}
+
+.titulo-anuncios, .titulo-quejas {
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.texto-quejas {
+  background-color: #e9e9e9;
+  color: #1f1f1f;
+  width: 618px;
+  font-weight: normal;
+  font-size: 13px;
+  text-align: justify;
+  padding: 6px;
+  border: 2px solid #fff;
+  border-top: none;
+  border-radius: 2px;
+  z-index: 2;
+  position: relative;
+  top: -10px
+
+}
