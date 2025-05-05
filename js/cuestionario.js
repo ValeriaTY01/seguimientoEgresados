@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const resp = await fetch("includes/guardar_encuestas.php", {
+            const resp = await fetch("includes/guardar_respuestas.php", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
