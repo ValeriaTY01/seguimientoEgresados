@@ -1,0 +1,71 @@
+body {
+    background-color: #f8f8f8;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+}
+
+.contenido-principal {
+    padding: 20px;
+}
+
+.card-exportacion {
+    background-color: #ffffff;
+    border: 2px solid #e46a00; /* contorno naranja */
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.08);
+    max-width: 480px;
+    margin: auto;
+}
+
+.card-exportacion h2 {
+    font-size: 16px;
+    color: #003366;
+    margin-bottom: 15px;
+    text-align: center;
+    border-bottom: 1px solid #e46a00;
+    padding-bottom: 6px;
+}
+
+.formulario-exportacion label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #003366;
+}
+
+.formulario-exportacion select {
+    width: 100%;
+    padding: 6px;
+    font-size: 13px;
+    border: 1px solid #003366;
+    border-radius: 3px;
+    background-color: #f0f8ff;
+    margin-top: 3px;
+}
+
+.boton-amarillo {
+    margin-top: 15px;
+    width: 100%;
+    background-color: #003366;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 8px;
+    font-size: 13px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.boton-amarillo:hover {
+    background-color: #002244;
+}
+
+#mensajeExportacion {
+    margin-top: 15px;
+    text-align: center;
+    font-style: italic;
+    color: #444;
+    font-size: 12px;
+}

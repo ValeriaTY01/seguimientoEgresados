@@ -1,7 +1,7 @@
 <?php
 $host = 'localhost';
 $usuario = 'root';
-$contrasena = 'cookie01122004$';
+$contrasena = '';
 $basedatos = 'seguimientoegresados'; // asegúrate que sea el nombre correcto
 
 $conexion = new mysqli($host, $usuario, $contrasena, $basedatos, 3307);

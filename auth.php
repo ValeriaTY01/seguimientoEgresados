@@ -24,7 +24,7 @@ if ($tipo_usuario === 'alumno') {
             exit;
         }
 
-        // Verificar contraseña (aquí sí debe ser password_verify)
+        // Verificar contraseña
         if (password_verify($contrasena, $egresado['CONTRASENA'])) {
             $_SESSION['nombre'] = $egresado['NOMBRE'];
             $_SESSION['curp'] = $egresado['CURP'];
@@ -50,11 +50,17 @@ if ($tipo_usuario === 'alumno') {
     if ($resultado->num_rows === 1) {
         $usuario = $resultado->fetch_assoc();
 
-        // Aquí SOLO comparamos directamente
+        // Comparar contraseña directamente (puedes mejorar esto con password_hash más adelante)
         if ($contrasena === $usuario['CONTRASENA']) {
             $_SESSION['nombre'] = $usuario['NOMBRE'];
             $_SESSION['rfc'] = $usuario['RFC'];
-            $_SESSION['rol'] = $usuario['ROL']; // Asignar el rol correspondiente
+            $_SESSION['rol'] = strtolower($usuario['ROL']); // Normalizamos a minúsculas
+
+            // Si es jefe de departamento, también guardar la carrera
+            if ($_SESSION['rol'] === 'jefe departamento') {
+                $_SESSION['carrera'] = $usuario['CARRERA']; // Asegúrate de que la tabla USUARIO tenga este campo
+            }
+
             header("Location: index.php");
             exit;
         } else {
