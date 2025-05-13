@@ -1,0 +1,177 @@
+body {
+    background-color: #f8f8f8;
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+}
+
+.contenido-principal {
+    padding: 20px;
+    color: black;
+}
+
+.card-exportacion {
+    background-color: #ffffff;
+    border: 2px solid #e46a00; /* contorno naranja */
+    padding: 20px;
+    border-radius: 6px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.08);
+    max-width: 480px;
+    margin: auto;
+}
+
+.card-exportacion h2 {
+    font-size: 16px;
+    color: #003366;
+    margin-bottom: 15px;
+    text-align: center;
+    border-bottom: 1px solid #e46a00;
+    padding-bottom: 6px;
+}
+
+.formulario-exportacion label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #003366;
+}
+
+.formulario-exportacion input[type="file"] {
+    width: 100%;
+    padding: 6px;
+    font-size: 13px;
+    border: 1px solid #003366;
+    border-radius: 3px;
+    background-color: #f0f8ff;
+    margin-top: 3px;
+}
+
+.boton-amarillo {
+    margin-top: 15px;
+    width: 100%;
+    background-color: #003366;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 8px;
+    font-size: 13px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.boton-amarillo:hover {
+    background-color: #002244;
+}
+
+.boton-verde {
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 8px;
+    font-size: 13px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.boton-verde:hover {
+    background-color: #1e7e34;
+}
+
+#mensajeImportacion {
+    margin-top: 15px;
+    text-align: center;
+    font-style: italic;
+    color: #444;
+    font-size: 12px;
+}
+
+/* Estilo para vista tipo TreeView */
+.treeview-container {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    font-family: Consolas, monospace;
+    font-size: 12px;
+    white-space: pre;
+    line-height: 1.4em;
+    border-radius: 4px;
+    color: black;
+}
+
+/* Estilos para la vista previa */
+#treeviewPreview {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 10px;
+}
+
+.sectionPreview {
+    margin-bottom: 20px;
+}
+
+h3 {
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.tablaVistaPrevia {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.tablaVistaPrevia th, .tablaVistaPrevia td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.tablaVistaPrevia th {
+    background-color: #f4f4f4;
+    color: #333;
+    font-weight: bold;
+}
+
+.tablaVistaPrevia tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.tablaVistaPrevia tr:hover {
+    background-color: #f1f1f1;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-contenido {
+    background-color: white;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.modal-contenido h3 {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.modal select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+}

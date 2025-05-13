@@ -15,6 +15,6 @@
         <div class="titulo">
             <div class="linea1"><span class="amarillo">Sistema Integral de Información</span></div>
             <div class="linea2">Instituto Tecnológico de Veracruz</div>
-            <div class="linea3">Portal de Jefes de Departamentos</div>
+            <div class="linea3">Portal de Jefe de Departamento</div>
         </div>
     

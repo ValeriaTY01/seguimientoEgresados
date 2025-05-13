@@ -202,14 +202,12 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-    // === LÓGICA SECCIÓN 3 ===
     const pregunta10 = document.querySelector('.pregunta input[name="respuesta[10]"]')?.closest('.pregunta');
     if (!pregunta10) return;
 
     const empresaFieldset = document.querySelector('fieldset.empresa');
     const secciones = document.querySelectorAll('.seccion');
 
-    // Ocultar sección 3 (preguntas 11 a 28) por defecto
     secciones.forEach(seccion => {
         const contienePreguntas = [...seccion.querySelectorAll('.pregunta')];
         contienePreguntas.forEach(p => {

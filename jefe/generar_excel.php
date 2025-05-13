@@ -12,7 +12,6 @@ $carreraJefe = $_SESSION['carrera'] ?? '';
 $spreadsheet = new Spreadsheet();
 $spreadsheet->removeSheetByIndex(0);
 
-// 1. Secciones filtradas por tipo de jefe
 if ($carreraJefe === 'Ingeniería Química' || $carreraJefe === 'Ingeniería Bioquímica') {
     $seccionesQuery = "SELECT ID_SECCION, NOMBRE FROM SECCION WHERE PARA_CARRERA = 'quimica' ORDER BY ORDEN";
     $stmtSecciones = $conexion->prepare($seccionesQuery);
@@ -82,7 +81,6 @@ while ($seccion = $secciones->fetch_assoc()) {
     }
 }
 
-// 2. Hoja de EGRESADOS (filtrada por carrera)
 $hojaEgresados = $spreadsheet->createSheet();
 $hojaEgresados->setTitle('Egresados');
 
@@ -151,7 +149,6 @@ if ($carreraJefe !== 'Ingeniería Química' && $carreraJefe !== 'Ingeniería Bio
 
 $spreadsheet->setActiveSheetIndexByName('Egresados');
 
-// Descargar archivo
 while (ob_get_level()) ob_end_clean();
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 header('Content-Disposition: attachment;filename="reporte_completo_encuestas.xlsx"');

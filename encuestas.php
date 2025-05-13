@@ -59,7 +59,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['accion'] === 'guardar-datos
         CIUDAD=?, MUNICIPIO=?, ESTADO=?
         WHERE CURP=?");
 
-    $upd->bind_param("sssssssssssisssssss",
+
+// "sssssssssssisssssss"
+    $upd->bind_param("sssssssssssssssssss",
         $_POST['num_control'], $_POST['nombre'],
         $_POST['apellido_paterno'], $_POST['apellido_materno'],
         $_POST['fecha_nacimiento'], $_POST['sexo'],
