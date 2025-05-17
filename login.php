@@ -56,6 +56,11 @@ $_SESSION['codigo_verificacion'] = $codigo;
                         <div class="registro-link" id="registro-enlace" style="display: none;">
                             <a href="#" onclick="abrirModal(); return false;">¿Eres egresado y no puedes ingresar? <strong>Regístrate aquí</strong></a>
                         </div>
+
+                        <div class="recuperar-link">
+                            <a href="#" onclick="abrirModalRecuperar(); return false;">¿Olvidaste tu contraseña?</a>
+                        </div>
+
                         <?php if (isset($_GET['error'])): ?>
                             <p id="mensaje-error" class="error-msg">
                                 <?php
@@ -79,6 +84,18 @@ $_SESSION['codigo_verificacion'] = $codigo;
                 <?php include 'includes/form_registro.php'; ?>
             </div>
         </div>
+
+        <!-- Modal de recuperación -->
+        <div id="modal-recuperar" class="modal-verificacion">
+            <div class="modal-content-verificacion">
+                <button class="btn-cerrar-modal" onclick="cerrarModalRecuperar()" title="Cerrar">×</button>
+                <h2 class="modal-title">Recuperar Contraseña</h2>
+                <form action="recuperar_contrasena.php" method="POST" class="formulario-recuperar">
+                    <input type="text" id="curp_recuperar" name="curp_o_correo" placeholder="CURP o Correo electrónico" required>
+                    <button type="submit">Enviar instrucciones</button>
+                </form>
+            </div>
+        </div>
     </main>
 
     <footer>
@@ -88,5 +105,18 @@ $_SESSION['codigo_verificacion'] = $codigo;
     </footer>
 
     <script src="js/login.js"></script>
+
+    <?php if (isset($_GET['msg'])): ?>
+    <script>
+        <?php if ($_GET['msg'] === 'success'): ?>
+            alert('Se enviaron las instrucciones al correo registrado.');
+        <?php elseif ($_GET['msg'] === 'error'): ?>
+            alert('No se pudo enviar el correo. Intenta nuevamente.');
+        <?php elseif ($_GET['msg'] === 'notfound'): ?>
+            alert('CURP o correo no encontrado.');
+        <?php endif; ?>
+    </script>
+    <?php endif; ?>
+
 </body>
 </html>

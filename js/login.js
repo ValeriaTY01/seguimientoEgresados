@@ -4,6 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const tipoInput = document.getElementById('tipo_usuario');
     const enlaceRegistro = document.getElementById('registro-enlace');
     const formLogin = document.getElementById('form-login'); // ← Asegúrate de tener este ID en el formulario
+        // Asegurar que el modal de recuperación esté oculto al cargar
+    const modalRecuperar = document.getElementById("modal-recuperar");
+    if (modalRecuperar) {
+        modalRecuperar.style.display = "none";
+    }
+
 
     // 1. Inicializar: deshabilitar inputs de formularios no activos
     forms.forEach(f => {
@@ -42,6 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (enlaceRegistro) {
                 enlaceRegistro.style.display = tipo === 'alumno' ? 'block' : 'none';
             }
+            const enlaceRecuperar = document.querySelector('.recuperar-link');
+            if (enlaceRecuperar) {
+                enlaceRecuperar.style.display = tipo === 'alumno' ? 'block' : 'none';
+            }
         });
     });
 
@@ -62,6 +72,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (enlaceRegistro && tipoInput.value === 'alumno') {
         enlaceRegistro.style.display = 'block';
     }
+
+    window.abrirModalRecuperar = () => {
+        const modal = document.getElementById("modal-recuperar");
+        modal.style.display = "flex"; // o "block", según tu CSS
+    };
+
+    window.cerrarModalRecuperar = () => {
+        const modal = document.getElementById("modal-recuperar");
+        modal.style.display = "none";
+
+        // Limpiar campo
+        const input = document.getElementById("curp_recuperar");
+        if (input) input.value = '';
+    };
 
     // 5. Funciones para modal de registro
     window.abrirModal = () => {
