@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Validar formulario antes de enviar
     form.addEventListener('submit', function(e) {
         // Evita múltiples clics
-        btnGenerar.disabled = true;
+        //btnGenerar.disabled = true;
 
         // Validación de sección
         if (tipoInforme.value === 'por_seccion' && !seccionSelect.value) {
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
 
-        fetch('jefe/buscar_egresados.php?q=' + encodeURIComponent(texto))
+        fetch('includes/buscar_egresados.php?q=' + encodeURIComponent(texto))
             .then(response => response.json())
             .then(data => {
                 resultadosBusqueda.innerHTML = '';

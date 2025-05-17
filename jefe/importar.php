@@ -1,5 +1,5 @@
 <?php
-include ('../includes/header_admin.php');
+include ('../includes/header_jefe.php');
 include ('../includes/menu.php');
 ?>
 

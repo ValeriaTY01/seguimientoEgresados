@@ -6,45 +6,44 @@ if (!isset($_SESSION['rol'])) {
     exit;
 }
 
-// Normalizamos el rol
 $rol = strtolower($_SESSION['rol']);
 
-// Redirección por rol
-switch ($rol) {
-    case 'egresado':
-        include 'includes/header.php';
-        include 'includes/menu.php';
-        ?>
-        <div class="contenido-principal">
-            <div class="botones-flotantes">
-                <button id="btn-encuesta" class="boton-amarillo">Encuesta para Egresados</button>
-                <button class="boton-blanco">Reiniciar contraseña.</button>
-            </div>
+// Mapeo de rutas por rol
+$destinos = [
+    'egresado'          => null, // Se queda en este archivo
+    'jefe departamento' => 'jefe/index_jefe.php',
+    'administrador'     => 'admin/index_admin.php',
+    'jefe vinculación'  => 'vinculacion/index_vinculacion.php',
+    'dba'               => 'dba/index_dba.php'
+];
+
+// Redirige si el rol tiene una ruta asociada
+if (isset($destinos[$rol]) && $destinos[$rol] !== null) {
+    header("Location: " . $destinos[$rol]);
+    exit;
+}
+
+// Rol 'egresado' o desconocido: mostrar bienvenida
+if ($rol === 'egresado') {
+    include 'includes/header.php';
+    include 'includes/menu.php';
+    ?>
+    <div class="contenido-principal">
+        <div class="bienvenida">
+            <h2>BIENVENIDO(A)</h2>
+            <p><?= htmlspecialchars($_SESSION['curp']) ?></p>
+            <p><?= htmlspecialchars($_SESSION['nombre']) ?></p>
         </div>
-        <script src="js/script.js"></script>
-        <?php include 'includes/footer.php';
-        break;
-
-    case 'jefe departamento':
-        header("Location: jefe/index_jefe.php");
-        exit;
-
-    case 'administrador':
-        header("Location: admin/index_admin.php");
-        exit;
-
-    case 'jefe vinculación':
-        header("Location: vinculacion/index_vinculacion.php");
-        exit;
-
-    case 'dba':
-        header("Location: dba/index_dba.php");
-        exit;
-
-    default:
-        header("Location: login.php?error=2");
-        exit;
+        <div class="botones-flotantes">
+            <button id="btn-encuesta" class="boton-amarillo">Encuesta para Egresados</button>
+            <button class="boton-blanco">Reiniciar contraseña</button>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+    <?php
+    include 'includes/footer.php';
+} else {
+    header("Location: login.php?error=2");
+    exit;
 }
 ?>
-
-

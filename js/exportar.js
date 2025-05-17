@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
       mensaje.style.display = 'block';
 
       try {
-          const response = await fetch('jefe/generar_excel.php', {
+          const response = await fetch('includes/generar_excel.php', {
               method: 'POST',
               body: formData
           });

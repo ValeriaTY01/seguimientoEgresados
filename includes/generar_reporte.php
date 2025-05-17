@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'jefe departamento') {
+if (!isset($_SESSION['rol']) || !in_array($_SESSION['rol'], ['administrador', 'jefe departamento', 'jefe vinculacion'])) {
     header("Location: ../login.php");
     exit();
 }
@@ -9,10 +9,11 @@ require_once('../db/conexion.php');
 require '../vendor/autoload.php';
 
 $rfc_usuario = $_SESSION['rfc'] ?? '';
-$carrera = $_SESSION['carrera'] ?? '';
+$rol = $_SESSION['rol'] ?? '';
+$carreraSesion = $_SESSION['carrera'] ?? '';
 
 $filtros = [
-    'carrera' => $carrera,
+    'carrera' => $_POST['carrera'] ?? '',
     'anio' => $_POST['anio'] ?? '',
     'sexo' => $_POST['sexo'] ?? '',
     'titulado' => $_POST['titulado'] ?? '',
@@ -22,6 +23,27 @@ $filtros = [
     'seccion' => $_POST['seccion'] ?? '',
     'curp_seleccionado' => $_POST['curp_seleccionado'] ?? '',
 ];
+
+// Si es jefe, forzamos su carrera
+if ($rol === 'jefe departamento') {
+    $filtros['carrera'] = $carreraSesion;
+}
+
+$carrera = $filtros['carrera'];
+
+// Validar si se intenta generar un reporte de encuesta 'química'
+$tipoEncuesta = null;
+if (in_array($carrera, ['Ingeniería Química', 'Ingeniería Bioquímica'])) {
+    $tipoEncuesta = 'quimica';
+} else {
+    $tipoEncuesta = 'general';
+}
+
+// Bloquear generación si se intenta acceder a encuesta 'química' sin ser de IQ o IBQ
+if ($tipoEncuesta === 'quimica' && !in_array($carrera, ['Ingeniería Química', 'Ingeniería Bioquímica'])) {
+    echo "<h3 style='color:red;'>Acceso denegado: Solo Ingeniería Química o Ingeniería Bioquímica pueden generar reportes de encuestas tipo 'química'.</h3>";
+    exit();
+}
 
 $mapTipoInforme = [
     'estadistico' => 'Informe Estadístico',
@@ -42,7 +64,7 @@ $jsonFiltros = json_encode($filtros);
 $stmt->bind_param("sss", $rfc_usuario, $jsonFiltros, $tipoInformeEtiqueta);
 $stmt->execute();
 
-// Incluir reporte correspondiente
+// Incluir y generar el reporte solicitado
 switch ($filtros['tipo_informe']) {
     case 'estadistico':
         include 'reportes/estadistico.php';

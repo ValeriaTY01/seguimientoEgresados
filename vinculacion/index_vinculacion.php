@@ -6,7 +6,7 @@ include '../includes/menu.php'; // el menú ya usa $_SESSION['rol']
 
 <div class="contenido-principal">
     <div class="bienvenida">
-        <h2>BIENVENIDO(A) JEFE DE DEPARTAMENTO</h2>
+        <h2>BIENVENIDO(A) JEFE DE VINCULACION</h2>
         <p><?php echo htmlspecialchars($_SESSION['rfc']); ?></p>
         <p><?php echo htmlspecialchars($_SESSION['nombre']); ?></p>
     </div>

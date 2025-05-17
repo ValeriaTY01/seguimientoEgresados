@@ -1,15 +1,22 @@
-<?php
+<?php 
 session_start();
 if (!isset($_SESSION['rol'])) {
     header("Location: ../login.php");
     exit();
 }
-require_once('../db/conexion.php');
-include ('../includes/header_admin.php');
-include ('../includes/menu.php');
 
-$isJefe = isset($_SESSION['rol']) && $_SESSION['rol'] === 'jefe departamento';
+require_once('../db/conexion.php');
+include ('header.php');
+include ('menu.php');
+
+$rol = $_SESSION['rol'];
 $carreraJefe = $_SESSION['carrera'] ?? '';
+
+$isAdmin = $rol === 'administrador';
+$isJefeVinculacion = $rol === 'jefe vinculacion';
+$isJefe = $rol === 'jefe departamento';
+
+$puedeVerTodas = $isAdmin || $isJefeVinculacion;
 
 $carrera = $_GET['carrera'] ?? '';
 $anio = $_GET['anio'] ?? '';
@@ -29,7 +36,6 @@ if (empty($_GET['periodo'])) {
     $periodo = $_GET['periodo'];
 }
 
-
 if ($isJefe) {
     $carrera = $carreraJefe;
     $_GET['carrera'] = $carreraJefe;
@@ -38,7 +44,7 @@ if ($isJefe) {
 // Obtener periodos disponibles
 $periodos = $conexion->query("SELECT ID_PERIODO, NOMBRE FROM PERIODO_ENCUESTA ORDER BY FECHA_INICIO DESC")->fetch_all(MYSQLI_ASSOC);
 
-// Obtener años únicos de egreso desde la base de datos
+// Obtener años únicos de egreso
 $anios = $conexion->query("
     SELECT DISTINCT YEAR(FECHA_EGRESO) AS anio 
     FROM EGRESADO 
@@ -46,11 +52,11 @@ $anios = $conexion->query("
     ORDER BY anio DESC
 ")->fetch_all(MYSQLI_ASSOC);
 
-// Cargar secciones (puedes adaptar según filtros si lo deseas)
-$secciones = $conexion->query("SELECT ID_SECCION, NOMBRE FROM SECCION ORDER BY ORDEN")->fetch_all(MYSQLI_ASSOC);
+// Verificar si la carrera es del tipo 'química'
+$carreraLower = strtolower($carrera);
+$esCarreraQuimica = in_array($carreraLower, ['ingeniería química', 'ingeniería bioquímica']);
 
-
-if ($carreraJefe === 'Ingeniería Química' || $carreraJefe === 'Ingeniería Bioquímica') {
+if ($esCarreraQuimica) {
     $filtroCarrera = "WHERE PARA_CARRERA = 'quimica'";
 } else {
     $filtroCarrera = "WHERE PARA_CARRERA IS NULL AND ID_SECCION NOT IN (1, 7)";
@@ -62,8 +68,6 @@ $secciones = $conexion->query("
     $filtroCarrera
     ORDER BY ORDEN
 ")->fetch_all(MYSQLI_ASSOC);
-
-
 
 // Tipos de informe
 $tiposInforme = [
@@ -77,13 +81,17 @@ $tiposInforme = [
 
 <link rel="stylesheet" href="css/reporte.css">
 <script src="js/reportes.js"></script>
+
 <div class="container">
     <h2>Generación de Informes</h2>
-    <form method="POST" action="jefe/generar_reporte.php">
+    <form method="POST" action="includes/generar_reporte.php">
+
         <label> Carrera: 
             <select name="carrera">
-                <option value="" selected>-- Seleccione una carrera --</option>
-                <?php if (!$isJefe): ?>
+                <?php if ($isJefe): ?>
+                    <option value="<?= htmlspecialchars($carreraJefe) ?>" selected><?= htmlspecialchars($carreraJefe) ?></option>
+                <?php else: ?>
+                    <option value="">-- Seleccione una carrera --</option>
                     <?php
                     $carreras = [
                         'Licenciatura en Administración',
@@ -100,11 +108,9 @@ $tiposInforme = [
                     ];
                     foreach ($carreras as $c) {
                         $selected = ($carrera == $c) ? 'selected' : '';
-                        echo "<option value=\"$c\">$c</option>";
+                        echo "<option value=\"$c\" $selected>$c</option>";
                     }
                     ?>
-                <?php else: ?>
-                    <option value="<?= htmlspecialchars($carreraJefe) ?>" selected><?= htmlspecialchars($carreraJefe) ?></option>
                 <?php endif; ?>
             </select>
         </label>
@@ -159,10 +165,10 @@ $tiposInforme = [
         </label>
 
         <label>Formato:
-        <select name="formato" required>
-            <option value="excel">Excel</option>
-            <option value="pdf">PDF</option>
-        </select>
+            <select name="formato" required>
+                <option value="excel">Excel</option>
+                <option value="pdf">PDF</option>
+            </select>
         </label>
 
         <div id="secciones_container">
