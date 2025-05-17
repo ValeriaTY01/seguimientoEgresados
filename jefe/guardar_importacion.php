@@ -34,7 +34,6 @@ try {
     $empresasPorCurp = [];
 
     foreach ($datos as $nombreSeccion => $registros) {
-        // ================== BLOQUE PARA EMPRESAS ===================
         if ($nombreSeccion === 'Empresas') {
             foreach ($registros as $fila) {
                 $filaVacia = true;
@@ -199,7 +198,6 @@ try {
             $curp = strtoupper(trim($fila['CURP'] ?? ''));
 
             if ($curp !== '') {
-                // Verifica si ya existe una respuesta para este CURP en el periodo actual
                 $stmtCuest = $conexion->prepare("SELECT ID_CUESTIONARIO FROM CUESTIONARIO_RESPUESTA WHERE CURP = ? AND ID_PERIODO = ?");
                 $stmtCuest->bind_param("si", $curp, $periodo);
                 $stmtCuest->execute();
@@ -207,15 +205,12 @@ try {
             
                 if ($stmtCuest->fetch()) {
                     $stmtCuest->close();
-                
-                    // Recuperar ID_CUESTIONARIO ya existente
+
                     $idCuestionarioExistente = $idCuestionario;
-                
-                    // Verificar si se puede actualizar con ID_EMPRESA si no se había asignado antes
+
                     if (!empty($empresasPorCurp[$curp])) {
                         $idEmpresa = $empresasPorCurp[$curp];
-                
-                        // Intentamos actualizar solo si ID_EMPRESA estaba en NULL
+
                         $stmtUpdate = $conexion->prepare("UPDATE CUESTIONARIO_RESPUESTA SET ID_EMPRESA = ? WHERE ID_CUESTIONARIO = ? AND (ID_EMPRESA IS NULL OR ID_EMPRESA = 0)");
                         $stmtUpdate->bind_param("ii", $idEmpresa, $idCuestionarioExistente);
                         $stmtUpdate->execute();
@@ -225,8 +220,7 @@ try {
                     $idCuestionario = $idCuestionarioExistente;
                 } else {
                     $stmtCuest->close();
-                
-                    // Obtener ID_EMPRESA relacionado con el CURP si existe
+
                     $idEmpresa = $empresasPorCurp[$curp] ?? null;
                 
                     if ($idEmpresa !== null) {

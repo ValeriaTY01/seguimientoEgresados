@@ -41,10 +41,11 @@ $menus = [
         'ANÁLISIS DE ENCUESTAS' => [
             ['VISUALIZACIÓN DE RESULTADOS', 'jefe/resultados.php'],
             ['ESTADO DE PARTICIPACIÓN', 'jefe/estado_encuestas.php'],
-            ['PERIODOS DE LEVANTAMIENTO', 'jefe/periodos.php']
+            ['PERIODOS DE LEVANTAMIENTO', 'jefe/periodos.php'],
+            ['METODOLOGÍA ESTADÍSTICA', 'jefe/metodologia.php'] 
         ],
         'REPORTES' => [
-            ['GENERACIÓN DE INFORMES', 'jefe/reportes.php'],
+            ['GENERACIÓN DE INFORMES', 'jefe/reporte.php'],
             ['HISTORIAL DE CONSULTAS', 'jefe/historial.php']
         ]
     ],

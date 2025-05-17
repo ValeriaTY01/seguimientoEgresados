@@ -42,7 +42,6 @@ try {
         return $valor;
     }
 
-    // Obtener el mapeo pregunta -> ID_PREGUNTA
     function obtenerMapeoPreguntas($conexion) {
         $mapa = [];
         $res = mysqli_query($conexion, "SELECT ID_PREGUNTA, TEXTO FROM PREGUNTA");
@@ -52,7 +51,6 @@ try {
         return $mapa;
     }
 
-    // Obtener el mapeo ID_PREGUNTA + TEXTO_OPCION -> ID_OPCION
     function obtenerMapeoOpciones($conexion) {
         $mapa = [];
         $res = mysqli_query($conexion, "SELECT ID_OPCION, ID_PREGUNTA, TEXTO FROM OPCION_RESPUESTA");
@@ -66,7 +64,6 @@ try {
     $mapaPreguntas = obtenerMapeoPreguntas($conexion);
     $mapaOpciones = obtenerMapeoOpciones($conexion);
 
-    // EGRESADOS
     $hojaEgresados = $spreadsheet->getSheetByName('Egresados');
     if (!$hojaEgresados) throw new Exception("Falta hoja 'Egresados'");
 
@@ -90,7 +87,6 @@ try {
     }
     $datos['Egresados'] = $egresadosDatos;
 
-    // EMPRESAS
     $hojaEmpresas = $spreadsheet->getSheetByName('Empresas');
     if ($hojaEmpresas) {
         $empresasDatos = [];
@@ -114,7 +110,6 @@ try {
         $datos['Empresas'] = $empresasDatos;
     }
 
-    // SECCIONES
     foreach ($spreadsheet->getSheetNames() as $hojaNombre) {
         if (in_array($hojaNombre, ['Egresados', 'Empresas'])) continue;
 
@@ -136,7 +131,6 @@ try {
                 $celda = $hoja->getCell(getColumnLetter($c) . $r);
                 $valor = obtenerValorCeldaFormateada($celda);
 
-                // Si el encabezado es una pregunta
                 if (isset($mapaPreguntas[$encabezado])) {
                     $idPregunta = $mapaPreguntas[$encabezado];
                     $clave = $idPregunta . '|' . $valor;
