@@ -105,18 +105,27 @@ $_SESSION['codigo_verificacion'] = $codigo;
     </footer>
 
     <script src="js/login.js"></script>
-
+    
     <?php if (isset($_GET['msg'])): ?>
     <script>
-        <?php if ($_GET['msg'] === 'success'): ?>
-            alert('Se enviaron las instrucciones al correo registrado.');
-        <?php elseif ($_GET['msg'] === 'error'): ?>
-            alert('No se pudo enviar el correo. Intenta nuevamente.');
-        <?php elseif ($_GET['msg'] === 'notfound'): ?>
-            alert('CURP o correo no encontrado.');
-        <?php endif; ?>
+        window.addEventListener('DOMContentLoaded', () => {
+            <?php if ($_GET['msg'] === 'success'): ?>
+                alert('Se enviaron las instrucciones al correo registrado.');
+            <?php elseif ($_GET['msg'] === 'error'): ?>
+                alert('No se pudo enviar el correo. Intenta nuevamente.');
+            <?php elseif ($_GET['msg'] === 'notfound'): ?>
+                alert('CURP o correo no encontrado.');
+            <?php endif; ?>
+
+            // Limpiar la URL para que no vuelva a mostrar el mensaje al recargar
+            if (window.history.replaceState) {
+                const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState(null, "", cleanUrl);
+            }
+        });
     </script>
     <?php endif; ?>
+
 
 </body>
 </html>

@@ -26,7 +26,7 @@ header {
 }
 
 .venus{
-  max-height: 480px;
+  max-height: 470px;
   max-width: 100%;
   position: fixed;
   top: 1px;
@@ -106,7 +106,8 @@ header {
 }
 
 .escudo {
-  max-width: 23%;
+  max-width: 16%;
+  margin-top: 25px;
   position: fixed;
 }
 
@@ -255,4 +256,3 @@ input[type="text"], input[type="password"] {
     font-weight: bold;
     margin-top: 10px;
 }
-
