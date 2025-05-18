@@ -1,6 +1,6 @@
 <?php
-include ('../includes/header_jefe.php');
-include ('../includes/menu.php');
+include ('header.php');
+include ('menu.php');
 ?>
 
 <link rel="stylesheet" href="css/importar.css">

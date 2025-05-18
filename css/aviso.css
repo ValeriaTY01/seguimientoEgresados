@@ -1,0 +1,72 @@
+.formulario-aviso {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.formulario-aviso h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.formulario-aviso textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    resize: vertical;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.destinatarios {
+    margin-top: 15px;
+    border: none;
+    padding: 0;
+}
+
+.destinatarios label {
+    margin-right: 15px;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.btn-publicar {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #0066cc;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn-publicar:hover {
+    background-color: #004d99;
+}
+
+.mensaje-aviso {
+    background-color: #e6ffed;
+    border-left: 5px solid #4CAF50;
+    padding: 10px;
+    margin-bottom: 10px;
+    color: #2d662d;
+}
+
+.aviso {
+    background-color: #fff;
+    border-left: 5px solid #0066cc;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.aviso .meta {
+    font-size: 12px;
+    color: #555;
+    margin-top: 10px;
+}

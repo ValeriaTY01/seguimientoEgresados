@@ -109,7 +109,7 @@ while ($row = $resultado->fetch_assoc()) {
 <?php include('includes/header.php'); ?>
 <?php include('includes/menu.php'); ?>
 
-<h1>Encuesta: <?= htmlspecialchars($tipo_encuesta) ?></h1>
+<h1 style="color: #004B82;">Encuesta de Seguimiento para Egresados</h1>
 
 <div id="barraProgreso"><div id="progreso"></div></div>
 

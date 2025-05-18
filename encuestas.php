@@ -131,8 +131,8 @@ include('includes/menu.php');
 <?php if (!$puede_contestar && !$puede_modificar): ?>
   <main>
     <section>
-      <h2>Encuesta ya completada</h2>
-      <p>Gracias por haber respondido la encuesta de seguimiento de egresados. Ya no puedes modificar tus respuestas en este período.</p>
+      <h2 style="color: #004B82;">Encuesta ya completada</h2>
+      <p style="color: #1f1f1f">Gracias por haber respondido la encuesta de seguimiento de egresados. Ya no puedes modificar tus respuestas en este período.</p>
       <a href="index.php" class="btn">Volver al inicio</a>
     </section>
   </main>
