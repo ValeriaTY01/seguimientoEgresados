@@ -1,72 +1,103 @@
-.formulario-aviso {
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.formulario-aviso h3 {
-    margin-top: 0;
-    color: #333;
-}
-
-.formulario-aviso textarea {
-    width: 100%;
-    padding: 10px;
-    font-size: 14px;
-    resize: vertical;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.destinatarios {
-    margin-top: 15px;
-    border: none;
+body {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    margin: 0;
     padding: 0;
+    background-color: #f9f9f9;
+    color: black;
 }
 
-.destinatarios label {
-    margin-right: 15px;
-    display: inline-block;
+h2, h3 {
+    color: #003366;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.crear-aviso, .aviso, form {
+    margin: 20px auto;
+    max-width: 800px;
+    background-color: #f5f5f5;
+    padding: 15px 20px;
+    border-radius: 10px;
+    border: 2px solid #e46a00;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    resize: vertical;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+input[type="datetime-local"] {
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    font-size: 13px;
     margin-top: 5px;
 }
 
-.btn-publicar {
-    margin-top: 15px;
-    padding: 10px 20px;
-    background-color: #0066cc;
-    color: white;
+label {
     font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    color: black;
+    display: inline-block;
+    margin-top: 8px;
 }
 
-.btn-publicar:hover {
-    background-color: #004d99;
+button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #002244;
 }
 
 .mensaje-aviso {
-    background-color: #e6ffed;
-    border-left: 5px solid #4CAF50;
+    max-width: 800px;
+    margin: 10px auto;
     padding: 10px;
-    margin-bottom: 10px;
-    color: #2d662d;
+    background-color: #e7f3ff;
+    border-left: 5px solid #003366;
+    border-radius: 6px;
+    font-weight: bold;
+    color: #003366;
 }
 
 .aviso {
-    background-color: #fff;
-    border-left: 5px solid #0066cc;
     margin-bottom: 15px;
-    padding: 15px;
+    padding: 12px 16px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-left: 5px solid #003366;
     border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .aviso .meta {
+    margin-top: 8px;
     font-size: 12px;
-    color: #555;
-    margin-top: 10px;
+    color: #666;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 30px auto;
+    max-width: 800px;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
 }

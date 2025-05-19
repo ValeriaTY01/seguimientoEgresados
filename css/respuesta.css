@@ -1,0 +1,191 @@
+body {
+    font-family: Arial, sans-serif;
+    font-size: 13px;
+    margin: 0;
+    padding: 0;
+    color: black;
+    background-color: #f9f9f9;
+}
+
+h2 {
+    color: #003366;
+    font-size: 18px;
+    border-bottom: 2px solid #e46a00;
+    padding-bottom: 4px;
+    margin-top: 0;
+}
+
+.contenedor {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.card {
+    background-color: white;
+    border: 2px solid #e46a00;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.formulario {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+}
+
+.form-grupo {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-grupo label {
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #003366;
+}
+
+.form-grupo input,
+.form-grupo select {
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.form-boton {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.form-boton button {
+    padding: 10px 30px;
+    background-color: #003366;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.form-boton button:hover {
+    background-color: #002244;
+}
+
+h3 {
+    background-color: #e46a00;
+    color: white;
+    padding: 8px;
+    border-radius: 6px;
+    margin-top: 20px;
+    font-size: 15px;
+}
+
+.contenedor {
+    display: flex;
+    gap: 20px;
+    margin: 30px auto;
+    padding: 0 20px;
+    max-width: 1300px;
+}
+
+.columna {
+    flex: 1;
+}
+
+.card {
+    border: 2px solid #e46a00;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+ 
+/* Contenedor de las pestañas */
+.tabs {
+    margin-bottom: 15px;
+    border-bottom: 2px solid #e46a00;
+}
+
+/* Botones de pestañas */
+.tab-buttons {
+    display: flex;
+    gap: 8px;
+    margin-bottom: -1px;
+}
+
+.tab-btn {
+    background-color: #003366;
+    color: white;
+    font-weight: bold;
+    padding: 6px 12px;
+    font-size: 8px;
+    border: 2px solid #e46a00;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.tab-btn:hover {
+    background-color: #002244;
+}
+
+.tab-btn.active {
+    background-color: white;
+    color: #003366;
+    border-bottom: 2px solid white;
+}
+
+/* Contenido de pestañas */
+.tab-contents {
+    border: 2px solid #e46a00;
+    background-color: white;
+    padding: 15px;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    min-height: 150px;
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.tab-contents {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    background-color: #f9f9f9;
+}
+
+.pregunta-respuesta {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 12px 15px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.pregunta-respuesta .pregunta {
+    font-weight: bold;
+    color: #003366;
+    margin: 0;
+    font-size: 12px;
+}
+
+.pregunta-respuesta .respuesta {
+    margin-top: 4px;
+    color: #333;
+    font-size: 11px;
+}

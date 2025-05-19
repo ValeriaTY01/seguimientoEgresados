@@ -214,7 +214,7 @@ while ($row = $resultado->fetch_assoc()) {
                                 </div>
                             </div>
                             <label for="pagina_web">Página web:</label>
-                            <input type="url" name="empresa[pagina_web]" id="pagina_web">
+                            <input type="text" name="empresa[pagina_web]" id="pagina_web">
                             <div class="doble-campo">
                                 <div>
                                     <label for="jefe_nombre">Nombre del jefe inmediato:</label>
