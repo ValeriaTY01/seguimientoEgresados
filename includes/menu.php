@@ -11,7 +11,7 @@ $carpetasBase = [
     'Administrador'      => 'includes/',
     'Jefe departamento'  => 'includes/',
     'Jefe vinculación'   => 'includes/',
-    'Dba'                => 'dba/',
+    'Dba'                => 'includes/',
     'Egresado'           => '',
     'Invitado'           => ''
 ];
