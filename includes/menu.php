@@ -26,6 +26,7 @@ $menuGestionEgresados = [
     ],
     'ANÁLISIS DE ENCUESTAS' => [
         ['VISUALIZACIÓN DE RESULTADOS', 'resultados.php'],
+        ['PERIODOS DE LEVANTAMIENTO', 'periodos.php'],
     ],
     'REPORTES' => [
         ['REPORTES GENERALES', 'reporte.php'],
@@ -45,15 +46,10 @@ $menus = [
         ]
     ],
     'Administrador' => $menuGestionEgresados + [
-        'ANÁLISIS DE ENCUESTAS' => [
-            ['VISUALIZACIÓN DE RESULTADOS', 'resultados.php'],
-            ['PERIODOS DE LEVANTAMIENTO', 'periodos.php']
-        ],
         'RETROALIMENTACIÓN' => [
             ['SOPORTE TÉCNICO', 'soporte.php']
         ]
     ],
-
     'Jefe departamento' => [
         'GESTIÓN ACADÉMICA' => [
             ['DIRECTORIO DE EGRESADOS', 'egresados.php'],
@@ -72,7 +68,7 @@ $menus = [
     'Jefe vinculación' => $menuGestionEgresados + [
         'ANÁLISIS DE ENCUESTAS' => [
             ['VISUALIZACIÓN DE RESULTADOS', 'resultados.php'],
-            ['PERIODOS DE LEVANTAMIENTO', 'periodos.php']
+            ['PERIODOS DE LEVANTAMIENTO', 'periodos.php'],
         ]
     ],
     'Dba' => [
