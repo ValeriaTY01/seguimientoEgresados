@@ -11,11 +11,6 @@ if (!isset($_SESSION['ya_respondio']) || !isset($_SESSION['id_periodo_actual']))
     exit;
 }
 
-if ($_SESSION['ya_respondio'] === true && $_SESSION['id_periodo_respondido'] == $_SESSION['id_periodo_actual']) {
-    echo "<h2>Ya has respondido el cuestionario en el período actual.</h2>";
-    exit;
-}
-
 $id_egresado = $_SESSION['id_egresado'];
 $tipo_encuesta = strtolower(trim($_SESSION['tipo_encuesta']));
 $id_periodo_actual = $_SESSION['id_periodo_actual'] ?? null;
@@ -24,6 +19,34 @@ if (in_array($tipo_encuesta, ['ingeniería química', 'ingeniería bioquímica']
     $tipo_encuesta = 'quimica';
 }
 
+// Si ya respondió en el periodo actual, no puede volver a responder
+if ($_SESSION['ya_respondio'] === true && $_SESSION['id_periodo_respondido'] == $id_periodo_actual) {
+    echo "<h2>Ya has respondido el cuestionario en el período actual.</h2>";
+    exit;
+}
+
+// 1) Obtener el último periodo en el que respondió el egresado
+$queryUltimoPeriodo = "
+    SELECT MAX(c.ID_PERIODO) AS ultimo_periodo
+    FROM CUESTIONARIO_RESPUESTA c
+    WHERE c.CURP = ?
+";
+$stmtUltimoPeriodo = $conexion->prepare($queryUltimoPeriodo);
+$stmtUltimoPeriodo->bind_param("s", $id_egresado);
+$stmtUltimoPeriodo->execute();
+$resultPeriodo = $stmtUltimoPeriodo->get_result();
+$ultimo_periodo = null;
+if ($row = $resultPeriodo->fetch_assoc()) {
+    $ultimo_periodo = $row['ultimo_periodo'];
+}
+$stmtUltimoPeriodo->close();
+
+if (!$ultimo_periodo) {
+    // No tiene respuestas previas en ningún periodo, se carga el formulario en blanco
+    $ultimo_periodo = 0; // o null, pero 0 para evitar errores
+}
+
+// 2) Cargar respuestas previas del último periodo en que respondió
 $consultaRespuestas = "
     SELECT r.ID_PREGUNTA, r.ID_OPCION, r.RESPUESTA_TEXTO 
     FROM RESPUESTA r
@@ -31,7 +54,7 @@ $consultaRespuestas = "
     WHERE c.CURP = ? AND c.ID_PERIODO = ?
 ";
 $stmtPrevias = $conexion->prepare($consultaRespuestas);
-$stmtPrevias->bind_param("si", $id_egresado, $id_periodo_actual);
+$stmtPrevias->bind_param("si", $id_egresado, $ultimo_periodo);
 $stmtPrevias->execute();
 $resultadoPrevio = $stmtPrevias->get_result();
 
@@ -41,14 +64,71 @@ while ($row = $resultadoPrevio->fetch_assoc()) {
     if (!isset($respuestas_previas[$pid])) {
         $respuestas_previas[$pid] = [];
     }
-
     if ($row['ID_OPCION']) {
+        // Puede tener múltiples opciones (checkbox)
         $respuestas_previas[$pid][] = $row['ID_OPCION'];
     } elseif ($row['RESPUESTA_TEXTO']) {
+        // Respuesta de texto (textarea o similar)
         $respuestas_previas[$pid] = $row['RESPUESTA_TEXTO'];
     }
 }
+$stmtPrevias->close();
 
+// 3) Cargar datos previos de la empresa si existen (tabla EMPRESA relacionada por CURP y periodo)
+$datos_empresa = [
+    'tipo_organismo' => '',
+    'giro' => '',
+    'razon_social' => '',
+    'calle' => '',
+    'numero' => '',
+    'colonia' => '',
+    'codigo_postal' => '',
+    'ciudad' => '',
+    'municipio' => '',
+    'estado' => '',
+    'telefono' => '',
+    'email' => '',
+    'pagina_web' => '',
+    'jefe_nombre' => '',
+    'jefe_puesto' => ''
+];
+
+// 3) Cargar datos previos de la empresa si existen (tabla EMPRESA relacionada por CURP y periodo)
+// Primero obtener el ID_EMPRESA de CUESTIONARIO_RESPUESTA
+$id_empresa = null;
+
+$queryEmpresaId = "
+    SELECT ID_EMPRESA FROM CUESTIONARIO_RESPUESTA WHERE CURP = ? AND ID_PERIODO = ? LIMIT 1
+";
+$stmtEmpresaId = $conexion->prepare($queryEmpresaId);
+$stmtEmpresaId->bind_param("si", $id_egresado, $ultimo_periodo);
+$stmtEmpresaId->execute();
+$resultEmpresaId = $stmtEmpresaId->get_result();
+if ($resultEmpresaId && $resultEmpresaId->num_rows > 0) {
+    $filaEmpresaId = $resultEmpresaId->fetch_assoc();
+    $id_empresa = $filaEmpresaId['ID_EMPRESA'];
+}
+$stmtEmpresaId->close();
+
+// Si encontramos el ID_EMPRESA, obtener los datos de la empresa
+if ($id_empresa !== null) {
+    $queryEmpresa = "
+        SELECT tipo_organismo, giro, razon_social, calle, numero, colonia, codigo_postal, ciudad, municipio, estado, telefono, email, pagina_web, jefe_inmediato_nombre, jefe_inmediato_puesto
+        FROM EMPRESA
+        WHERE ID_EMPRESA = ?
+        LIMIT 1
+    ";
+    $stmtEmpresa = $conexion->prepare($queryEmpresa);
+    $stmtEmpresa->bind_param("i", $id_empresa);
+    $stmtEmpresa->execute();
+    $resultEmpresa = $stmtEmpresa->get_result();
+    if ($resultEmpresa && $resultEmpresa->num_rows > 0) {
+        $datos_empresa = $resultEmpresa->fetch_assoc();
+    }
+    $stmtEmpresa->close();
+}
+
+// 4) Cargar preguntas, secciones y opciones
 $query = "
     SELECT 
         s.ID_SECCION AS seccion_id, s.NOMBRE AS seccion_nombre, s.ORDEN AS seccion_orden,
@@ -163,68 +243,56 @@ while ($row = $resultado->fetch_assoc()) {
                             <label for="tipo_organismo">Tipo de organismo:</label>
                             <select name="empresa[tipo_organismo]" id="tipo_organismo">
                                 <option value="">Seleccione...</option>
-                                <option value="Público">Público</option>
-                                <option value="Privado">Privado</option>
-                                <option value="Social">Social</option>
+                                <option value="Público" <?= ($datos_empresa['tipo_organismo'] === 'Público') ? 'selected' : '' ?>>Público</option>
+                                <option value="Privado" <?= ($datos_empresa['tipo_organismo'] === 'Privado') ? 'selected' : '' ?>>Privado</option>
+                                <option value="Social" <?= ($datos_empresa['tipo_organismo'] === 'Social') ? 'selected' : '' ?>>Social</option>
                             </select>
                             <label for="giro">Giro:</label>
-                            <textarea name="empresa[giro]" id="giro"></textarea>
+                            <textarea name="empresa[giro]" id="giro"><?= htmlspecialchars($datos_empresa['giro']) ?></textarea>
                             <label for="razon_social">Razón social:</label>
-                            <input type="text" name="empresa[razon_social]" id="razon_social">
+                            <input type="text" name="empresa[razon_social]" id="razon_social" value="<?= htmlspecialchars($datos_empresa['razon_social']) ?>">
                             <div class="doble-campo">
                                 <div>
                                     <label for="calle">Calle:</label>
-                                    <input type="text" name="empresa[calle]" id="calle">
+                                    <input type="text" name="empresa[calle]" id="calle" value="<?= htmlspecialchars($datos_empresa['calle']) ?>">
                                 </div>
                                 <div>
                                     <label for="numero">Número:</label>
-                                    <input type="text" name="empresa[numero]" id="numero">
+                                    <input type="text" name="empresa[numero]" id="numero" value="<?= htmlspecialchars($datos_empresa['numero']) ?>">
                                 </div>
                             </div>
                             <div class="doble-campo">
                                 <div>
                                     <label for="colonia">Colonia:</label>
-                                    <input type="text" name="empresa[colonia]" id="colonia">
+                                    <input type="text" name="empresa[colonia]" id="colonia" value="<?= htmlspecialchars($datos_empresa['colonia']) ?>">
                                 </div>
                                 <div>
                                     <label for="codigo_postal">Código postal:</label>
-                                    <input type="text" name="empresa[codigo_postal]" id="codigo_postal">
+                                    <input type="text" name="empresa[codigo_postal]" id="codigo_postal" value="<?= htmlspecialchars($datos_empresa['codigo_postal']) ?>">
                                 </div>
                             </div>
                             <div class="doble-campo">
                                 <div>
                                     <label for="ciudad">Ciudad:</label>
-                                    <input type="text" name="empresa[ciudad]" id="ciudad">
+                                    <input type="text" name="empresa[ciudad]" id="ciudad" value="<?= htmlspecialchars($datos_empresa['ciudad']) ?>">
                                 </div>
                                 <div>
                                     <label for="municipio">Municipio:</label>
-                                    <input type="text" name="empresa[municipio]" id="municipio">
+                                    <input type="text" name="empresa[municipio]" id="municipio" value="<?= htmlspecialchars($datos_empresa['municipio']) ?>">
                                 </div>
                             </div>
                             <label for="estado">Estado:</label>
-                            <input type="text" name="empresa[estado]" id="estado">
-                            <div class="doble-campo">
-                                <div>
-                                    <label for="telefono">Teléfono:</label>
-                                    <input type="text" name="empresa[telefono]" id="telefono">
-                                </div>
-                                <div>
-                                    <label for="email">Email:</label>
-                                    <input type="email" name="empresa[email]" id="email">
-                                </div>
-                            </div>
+                            <input type="text" name="empresa[estado]" id="estado" value="<?= htmlspecialchars($datos_empresa['estado']) ?>">
+                            <label for="telefono">Teléfono:</label>
+                            <input type="text" name="empresa[telefono]" id="telefono" value="<?= htmlspecialchars($datos_empresa['telefono']) ?>">
+                            <label for="email">Correo electrónico:</label>
+                            <input type="email" name="empresa[email]" id="email" value="<?= htmlspecialchars($datos_empresa['email']) ?>">
                             <label for="pagina_web">Página web:</label>
-                            <input type="text" name="empresa[pagina_web]" id="pagina_web">
-                            <div class="doble-campo">
-                                <div>
-                                    <label for="jefe_nombre">Nombre del jefe inmediato:</label>
-                                    <input type="text" name="empresa[jefe_nombre]" id="jefe_nombre">
-                                </div>
-                                <div>
-                                    <label for="jefe_puesto">Puesto del jefe inmediato:</label>
-                                    <input type="text" name="empresa[jefe_puesto]" id="jefe_puesto">
-                                </div>
-                            </div>
+                            <input type="url" name="empresa[pagina_web]" id="pagina_web" value="<?= htmlspecialchars($datos_empresa['pagina_web']) ?>">
+                            <label for="jefe_inmediato_nombre">Nombre del jefe inmediato:</label>
+                            <input type="text" name="empresa[jefe_nombre]" id="jefe_inmediato_nombre" value="<?= htmlspecialchars($datos_empresa['jefe_inmediato_nombre']) ?>">
+                            <label for="jefe_inmediato_puesto">Puesto del jefe inmediato:</label>
+                            <input type="text" name="empresa[jefe_inmediato_puesto]" id="jefe_inmediato_puesto" value="<?= htmlspecialchars($datos_empresa['jefe_inmediato_puesto']) ?>">
                         </div>
                     </fieldset>
                 <?php endif; ?>
@@ -249,9 +317,6 @@ while ($row = $resultado->fetch_assoc()) {
   </div>
 </div>
 
-<script>
-    const RESPUESTAS_PREVIAS = <?= json_encode($respuestas_previas) ?>;
-</script>
 <script src="js/cuestionario.js"></script>
 </body>
 </html>
