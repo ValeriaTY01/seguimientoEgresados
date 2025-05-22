@@ -1,18 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
     cargarUsuarios();
+
     document.getElementById("btnAgregarUsuario").addEventListener("click", abrirModalAgregar);
     document.getElementById("formUsuario").addEventListener("submit", guardarUsuario);
     document.getElementById("filtroRol").addEventListener("change", cargarUsuarios);
-    document.getElementById("rol").addEventListener("change", function() {
-    const campoCarrera = document.getElementById("carrera"); // El div que contiene el select
-    if (this.value === "jefe departamento") {
-        campoCarrera.style.display = "block";
-    } else {
-        campoCarrera.style.display = "none";
-        document.getElementById("carrera").value = ""; // limpiar carrera si no aplica
-    }
-});
+    document.getElementById("filtroCarrera").addEventListener("change", cargarUsuarios);
 
+    document.getElementById("rol").addEventListener("change", function () {
+        const contenedorCarrera = document.getElementById("contenedorCarrera");
+        const selectCarrera = document.getElementById("carrera");
+        if (this.value.toLowerCase() === "jefe departamento") {
+            contenedorCarrera.style.display = "block";
+        } else {
+            contenedorCarrera.style.display = "none";
+            selectCarrera.value = "";
+        }
+    });
 });
 
 function cargarUsuarios() {
@@ -28,40 +31,26 @@ function cargarUsuarios() {
             }
             const usuarios = json.data;
             const tbody = document.querySelector("#tablaUsuarios tbody");
-            tbody.innerHTML = "";
+            tbody.innerHTML = usuarios.map(u => `
+                <tr>
+                    <td>${u.rfc}</td>
+                    <td>${u.nombre}</td>
+                    <td>${u.email}</td>
+                    <td>${u.rol}</td>
+                    <td>${u.carrera || ''}</td>
+                    <td>
+                        <button class="boton-editar" data-rfc="${u.rfc}">Editar</button>
+                        <button class="boton-eliminar" data-rfc="${u.rfc}">Eliminar</button>
+                    </td>
+                </tr>
+            `).join("");
 
-            usuarios.forEach(u => {
-                let fila = `
-                    <tr>
-                        <td>${u.rfc}</td>
-                        <td>${u.nombre}</td>
-                        <td>${u.email}</td>
-                        <td>${u.rol}</td>
-                        <td>${u.carrera || ''}</td>
-                        <td>
-                            <button onclick="editarUsuario('${u.rfc}')" style="background-color:rgb(231, 173, 0);
-                                                                        color: white;
-                                                                        border: none;
-                                                                        padding: 7px 16px;
-                                                                        font-size: 13px;
-                                                                        border-radius: 5px;
-                                                                        cursor: pointer;
-                                                                        transition: background-color 0.25s ease;
-                                                                        text-decoration: none;
-                                                                        display: inline-block;">Editar</button>
-                            <button onclick="eliminarUsuario('${u.rfc}')" style="background-color: #c0392b;
-                                                                        color: white;
-                                                                        border: none;
-                                                                        padding: 7px 16px;
-                                                                        font-size: 13px;
-                                                                        border-radius: 5px;
-                                                                        cursor: pointer;
-                                                                        transition: background-color 0.25s ease;
-                                                                        text-decoration: none;
-                                                                        display: inline-block;">Eliminar</button>
-                        </td>
-                    </tr>`;
-                tbody.innerHTML += fila;
+            // Asignar eventos a los botones de editar y eliminar
+            document.querySelectorAll(".boton-editar").forEach(btn => {
+                btn.addEventListener("click", () => editarUsuario(btn.dataset.rfc));
+            });
+            document.querySelectorAll(".boton-eliminar").forEach(btn => {
+                btn.addEventListener("click", () => eliminarUsuario(btn.dataset.rfc));
             });
         })
         .catch(error => console.error("Error fetch usuarios:", error));
@@ -69,7 +58,9 @@ function cargarUsuarios() {
 
 function abrirModalAgregar() {
     document.getElementById("formUsuario").reset();
-    document.getElementById("modo").value = "agregar";
+    document.getElementById("accion").value = "agregar";
+    // Ocultar contenedor de carrera al agregar
+    document.getElementById("contenedorCarrera").style.display = "none";
     document.getElementById("modalUsuario").style.display = "block";
 }
 
@@ -86,7 +77,7 @@ function editarUsuario(rfc) {
                 return;
             }
             const data = u.data;
-            document.getElementById("modo").value = "editar";
+            document.getElementById("accion").value = "actualizar";
             document.getElementById("rfc_original").value = data.rfc;
             document.getElementById("rfc").value = data.rfc;
             document.getElementById("nombre").value = data.nombre;
@@ -94,8 +85,17 @@ function editarUsuario(rfc) {
             document.getElementById("apellido_materno").value = data.apellido_materno || "";
             document.getElementById("email").value = data.email;
             document.getElementById("rol").value = data.rol;
-            document.getElementById("carrera").value = data.carrera;
+            document.getElementById("carrera").value = data.carrera || "";
             document.getElementById("contrasena").value = ""; // no mostrar la actual
+
+            // Mostrar u ocultar carrera según el rol
+            const contenedorCarrera = document.getElementById("contenedorCarrera");
+            if (data.rol.toLowerCase() === "jefe departamento") {
+                contenedorCarrera.style.display = "block";
+            } else {
+                contenedorCarrera.style.display = "none";
+            }
+
             document.getElementById("modalUsuario").style.display = "block";
         });
 }
@@ -104,6 +104,11 @@ function guardarUsuario(e) {
     e.preventDefault();
     const form = e.target;
     const datos = new FormData(form);
+
+    if (!datos.get("rfc") || !datos.get("nombre") || !datos.get("email") || !datos.get("rol")) {
+        alert("Por favor completa todos los campos obligatorios.");
+        return;
+    }
 
     fetch("includes/usuarios_api.php", {
         method: "POST",

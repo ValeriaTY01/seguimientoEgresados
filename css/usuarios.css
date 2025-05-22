@@ -161,3 +161,25 @@ h2 {
 .acciones-modal button:hover {
     opacity: 0.9;
 }
+
+.boton-editar {
+    background-color: rgb(231, 173, 0);
+    color: white;
+    border: none;
+    padding: 7px 16px;
+    font-size: 13px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+}
+
+.boton-eliminar {
+    background-color: #c0392b;
+    color: white;
+    border: none;
+    padding: 7px 16px;
+    font-size: 13px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+}

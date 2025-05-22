@@ -45,10 +45,15 @@ $menus = [
         ]
     ],
     'Administrador' => $menuGestionEgresados + [
+        'ANÁLISIS DE ENCUESTAS' => [
+            ['VISUALIZACIÓN DE RESULTADOS', 'resultados.php'],
+            ['PERIODOS DE LEVANTAMIENTO', 'periodos.php']
+        ],
         'RETROALIMENTACIÓN' => [
             ['SOPORTE TÉCNICO', 'soporte.php']
         ]
     ],
+
     'Jefe departamento' => [
         'GESTIÓN ACADÉMICA' => [
             ['DIRECTORIO DE EGRESADOS', 'egresados.php'],

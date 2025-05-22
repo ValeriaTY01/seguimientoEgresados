@@ -47,7 +47,7 @@ include("menu.php");
         <span class="cerrar" onclick="cerrarModal()">&times;</span>
         <h3 id="tituloModal">Agregar Usuario</h3>
         <form id="formUsuario">
-            <input type="hidden" name="modo" id="modo">
+            <input type="hidden" name="accion" id="accion">
             <input type="hidden" name="rfc_original" id="rfc_original">
 
             <label>RFC:</label>
@@ -77,20 +77,22 @@ include("menu.php");
             </select>
 
             <label>Carrera:</label>
+            <div id="contenedorCarrera">
             <select name="carrera" id="carrera">
-                <option value="">Ninguna</option>
-                <option value="Licenciatura en Administración">Licenciatura en Administración</option>
-                <option value="Ingeniería Bioquímica">Ingeniería Bioquímica</option>
-                <option value="Ingeniería Eléctrica">Ingeniería Eléctrica</option>
-                <option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
-                <option value="Ingeniería Industrial">Ingeniería Industrial</option>
-                <option value="Ingeniería Mecatrónica">Ingeniería Mecatrónica</option>
-                <option value="Ingeniería Mecánica">Ingeniería Mecánica</option>
-                <option value="Ingeniería en Sistemas Computacionales">Ingeniería en Sistemas Computacionales</option>
-                <option value="Ingeniería Química">Ingeniería Química</option>
-                <option value="Ingeniería en Energías Renovables">Ingeniería en Energías Renovables</option>
-                <option value="Ingeniería en Gestión Empresarial">Ingeniería en Gestión Empresarial</option>
-            </select>
+                    <option value="">Ninguna</option>
+                    <option value="Licenciatura en Administración">Licenciatura en Administración</option>
+                    <option value="Ingeniería Bioquímica">Ingeniería Bioquímica</option>
+                    <option value="Ingeniería Eléctrica">Ingeniería Eléctrica</option>
+                    <option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
+                    <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+                    <option value="Ingeniería Mecatrónica">Ingeniería Mecatrónica</option>
+                    <option value="Ingeniería Mecánica">Ingeniería Mecánica</option>
+                    <option value="Ingeniería en Sistemas Computacionales">Ingeniería en Sistemas Computacionales</option>
+                    <option value="Ingeniería Química">Ingeniería Química</option>
+                    <option value="Ingeniería en Energías Renovables">Ingeniería en Energías Renovables</option>
+                    <option value="Ingeniería en Gestión Empresarial">Ingeniería en Gestión Empresarial</option>
+                </select>
+            </div>
 
             <div class="acciones-modal">
                 <button type="submit">Guardar</button>

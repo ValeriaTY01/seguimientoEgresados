@@ -1,74 +1,70 @@
 <?php
 header('Content-Type: application/json');
-
 require_once('../db/conexion.php');
 
-$accion = isset($_GET['accion']) ? $_GET['accion'] : '';
+$accion = isset($_REQUEST['accion']) ? $_REQUEST['accion'] : '';
 
-// ACCIONES GET
-if ($accion === 'listar') {
-    $rol = isset($_GET['rol']) ? $conexion->real_escape_string($_GET['rol']) : '';
-    $carrera = isset($_GET['carrera']) ? $conexion->real_escape_string($_GET['carrera']) : '';
+switch ($accion) {
+    // =======================
+    // ACCIONES GET
+    // =======================
 
-    $filtros = [];
-    if ($rol !== '') {
-        $filtros[] = "ROL = '$rol'";
-    }
-    if ($carrera !== '') {
-        $filtros[] = "CARRERA = '$carrera'";
-    }
+    case 'listar':
+        $rol = isset($_GET['rol']) ? $conexion->real_escape_string($_GET['rol']) : '';
+        $carrera = isset($_GET['carrera']) ? $conexion->real_escape_string($_GET['carrera']) : '';
 
-    $where = count($filtros) > 0 ? " WHERE " . implode(" AND ", $filtros) : "";
+        $filtros = [];
+        if ($rol !== '') $filtros[] = "ROL = '$rol'";
+        if ($carrera !== '') $filtros[] = "CARRERA = '$carrera'";
 
-    $sql = "SELECT RFC, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, EMAIL, ROL, CARRERA FROM USUARIO" . $where;
+        $where = count($filtros) > 0 ? " WHERE " . implode(" AND ", $filtros) : "";
+        $sql = "SELECT RFC, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, EMAIL, ROL, CARRERA FROM USUARIO" . $where;
 
-    $resultado = $conexion->query($sql);
-    if (!$resultado) {
-        echo json_encode(["ok" => false, "mensaje" => "Error en consulta: " . $conexion->error]);
-        exit;
-    }
+        $resultado = $conexion->query($sql);
+        if (!$resultado) {
+            echo json_encode(["ok" => false, "mensaje" => "Error en consulta: " . $conexion->error]);
+            exit;
+        }
 
-    $usuarios = [];
-    while ($fila = $resultado->fetch_assoc()) {
-        $usuarios[] = [
-            "rfc" => $fila["RFC"],
-            "nombre" => $fila["NOMBRE"] . " " . $fila["APELLIDO_PATERNO"] . " " . $fila["APELLIDO_MATERNO"],
-            "email" => $fila["EMAIL"],
-            "rol" => $fila["ROL"],
-            "carrera" => $fila["CARRERA"]
-        ];
-    }
+        $usuarios = [];
+        while ($fila = $resultado->fetch_assoc()) {
+            $usuarios[] = [
+                "rfc" => $fila["RFC"],
+                "nombre" => $fila["NOMBRE"] . " " . $fila["APELLIDO_PATERNO"] . " " . $fila["APELLIDO_MATERNO"],
+                "email" => $fila["EMAIL"],
+                "rol" => $fila["ROL"],
+                "carrera" => $fila["CARRERA"]
+            ];
+        }
 
-    echo json_encode(["ok" => true, "data" => $usuarios]);
-    exit;
-}
+        echo json_encode(["ok" => true, "data" => $usuarios]);
+        break;
 
-if ($accion === 'carreras') {
-    $sql = "SELECT DISTINCT CARRERA FROM USUARIO WHERE CARRERA IS NOT NULL AND CARRERA != ''";
-    $resultado = $conexion->query($sql);
+    case 'carreras':
+        $sql = "SELECT DISTINCT CARRERA FROM USUARIO WHERE CARRERA IS NOT NULL AND CARRERA != ''";
+        $resultado = $conexion->query($sql);
 
-    $carreras = [];
-    while ($fila = $resultado->fetch_assoc()) {
-        $carreras[] = [
-            "id" => $fila["CARRERA"],  // usar el nombre como id también
-            "nombre" => $fila["CARRERA"]
-        ];
-    }
+        $carreras = [];
+        while ($fila = $resultado->fetch_assoc()) {
+            $carreras[] = ["id" => $fila["CARRERA"], "nombre" => $fila["CARRERA"]];
+        }
 
-    echo json_encode(["ok" => true, "data" => $carreras]);
-    exit;
-}
+        echo json_encode(["ok" => true, "data" => $carreras]);
+        break;
 
-if ($accion === 'obtener' && isset($_GET['rfc'])) {
-    $rfc = $conexion->real_escape_string($_GET['rfc']);
-    $sql = "SELECT RFC, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, EMAIL, ROL, CARRERA FROM USUARIO WHERE RFC = '$rfc'";
-    $resultado = $conexion->query($sql);
+    case 'obtener':
+        if (!isset($_GET['rfc'])) {
+            echo json_encode(["ok" => false, "mensaje" => "RFC no proporcionado"]);
+            break;
+        }
 
-    if ($resultado && $resultado->num_rows > 0) {
-        $fila = $resultado->fetch_assoc();
-        echo json_encode([
-            "ok" => true,
-            "data" => [
+        $rfc = $conexion->real_escape_string($_GET['rfc']);
+        $sql = "SELECT * FROM USUARIO WHERE RFC = '$rfc'";
+        $resultado = $conexion->query($sql);
+
+        if ($resultado && $resultado->num_rows > 0) {
+            $fila = $resultado->fetch_assoc();
+            echo json_encode(["ok" => true, "data" => [
                 "rfc" => $fila["RFC"],
                 "nombre" => $fila["NOMBRE"],
                 "apellido_paterno" => $fila["APELLIDO_PATERNO"],
@@ -76,130 +72,116 @@ if ($accion === 'obtener' && isset($_GET['rfc'])) {
                 "email" => $fila["EMAIL"],
                 "rol" => $fila["ROL"],
                 "carrera" => $fila["CARRERA"]
-            ]
-        ]);
-    } else {
-        echo json_encode(["ok" => false, "mensaje" => "Usuario no encontrado"]);
-    }
-    exit;
-}
+            ]]);
+        } else {
+            echo json_encode(["ok" => false, "mensaje" => "Usuario no encontrado"]);
+        }
+        break;
 
-// ACCIONES POST
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $accion_post = isset($_POST['accion']) ? $_POST['accion'] : '';
+    // =======================
+    // ACCIONES POST
+    // =======================
 
-    if ($accion_post === 'eliminar') {
+    case 'eliminar':
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') break;
+
         $rfc = isset($_POST['rfc']) ? $conexion->real_escape_string($_POST['rfc']) : '';
         if ($rfc === '') {
             echo json_encode(["ok" => false, "mensaje" => "RFC no especificado"]);
-            exit;
+            break;
         }
 
         $sqlCheck = "SELECT ROL FROM USUARIO WHERE RFC = '$rfc'";
         $resultadoCheck = $conexion->query($sqlCheck);
+
         if ($resultadoCheck && $resultadoCheck->num_rows > 0) {
             $usuario = $resultadoCheck->fetch_assoc();
             if (strtolower($usuario['ROL']) === 'administrador') {
                 echo json_encode(["ok" => false, "mensaje" => "No se puede eliminar al administrador"]);
-                exit;
+                break;
             }
         } else {
             echo json_encode(["ok" => false, "mensaje" => "Usuario no encontrado"]);
-            exit;
+            break;
         }
 
         $sqlEliminar = "DELETE FROM USUARIO WHERE RFC = '$rfc'";
-        if ($conexion->query($sqlEliminar)) {
-            echo json_encode(["ok" => true, "mensaje" => "Usuario eliminado correctamente"]);
-        } else {
-            echo json_encode(["ok" => false, "mensaje" => "Error al eliminar: " . $conexion->error]);
-        }
-        exit;
-    }
+        echo $conexion->query($sqlEliminar)
+            ? json_encode(["ok" => true, "mensaje" => "Usuario eliminado correctamente"])
+            : json_encode(["ok" => false, "mensaje" => "Error al eliminar: " . $conexion->error]);
+        break;
 
-    if ($accion_post === 'agregar') {
-        // Campos esperados
-        $rfc = isset($_POST['rfc']) ? $conexion->real_escape_string(trim($_POST['rfc'])) : '';
-        $nombre = isset($_POST['nombre']) ? $conexion->real_escape_string(trim($_POST['nombre'])) : '';
-        $apellido_paterno = isset($_POST['apellido_paterno']) ? $conexion->real_escape_string(trim($_POST['apellido_paterno'])) : '';
-        $apellido_materno = isset($_POST['apellido_materno']) ? $conexion->real_escape_string(trim($_POST['apellido_materno'])) : '';
-        $email = isset($_POST['email']) ? $conexion->real_escape_string(trim($_POST['email'])) : '';
-        $rol = isset($_POST['rol']) ? $conexion->real_escape_string(trim($_POST['rol'])) : '';
-        $carrera = isset($_POST['carrera']) ? $conexion->real_escape_string(trim($_POST['carrera'])) : '';
+    case 'agregar':
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') break;
 
-        // Validaciones básicas
+        $rfc = trim($_POST['rfc'] ?? '');
+        $nombre = trim($_POST['nombre'] ?? '');
+        $apellido_paterno = trim($_POST['apellido_paterno'] ?? '');
+        $apellido_materno = trim($_POST['apellido_materno'] ?? '');
+        $email = trim($_POST['email'] ?? '');
+        $rol = trim($_POST['rol'] ?? '');
+        $carrera = trim($_POST['carrera'] ?? '');
+
         if ($rfc === '' || $nombre === '' || $apellido_paterno === '' || $email === '' || $rol === '') {
             echo json_encode(["ok" => false, "mensaje" => "Faltan campos obligatorios"]);
-            exit;
+            break;
         }
 
-        // Verificar si ya existe el RFC
         $sqlExiste = "SELECT RFC FROM USUARIO WHERE RFC = '$rfc'";
         $resExiste = $conexion->query($sqlExiste);
         if ($resExiste && $resExiste->num_rows > 0) {
             echo json_encode(["ok" => false, "mensaje" => "El RFC ya existe"]);
-            exit;
+            break;
         }
 
         $sqlInsert = "INSERT INTO USUARIO (RFC, NOMBRE, APELLIDO_PATERNO, APELLIDO_MATERNO, EMAIL, ROL, CARRERA)
                       VALUES ('$rfc', '$nombre', '$apellido_paterno', '$apellido_materno', '$email', '$rol', '$carrera')";
 
-        if ($conexion->query($sqlInsert)) {
-            echo json_encode(["ok" => true, "mensaje" => "Usuario agregado correctamente"]);
-        } else {
-            echo json_encode(["ok" => false, "mensaje" => "Error al agregar usuario: " . $conexion->error]);
-        }
-        exit;
-    }
+        echo $conexion->query($sqlInsert)
+            ? json_encode(["ok" => true, "mensaje" => "Usuario agregado correctamente"])
+            : json_encode(["ok" => false, "mensaje" => "Error al agregar usuario: " . $conexion->error]);
+        break;
 
-    if ($accion_post === 'actualizar') {
-        // Campos esperados
-        $rfc = isset($_POST['rfc']) ? $conexion->real_escape_string(trim($_POST['rfc'])) : '';
-        $nombre = isset($_POST['nombre']) ? $conexion->real_escape_string(trim($_POST['nombre'])) : '';
-        $apellido_paterno = isset($_POST['apellido_paterno']) ? $conexion->real_escape_string(trim($_POST['apellido_paterno'])) : '';
-        $apellido_materno = isset($_POST['apellido_materno']) ? $conexion->real_escape_string(trim($_POST['apellido_materno'])) : '';
-        $email = isset($_POST['email']) ? $conexion->real_escape_string(trim($_POST['email'])) : '';
-        $rol = isset($_POST['rol']) ? $conexion->real_escape_string(trim($_POST['rol'])) : '';
-        $carrera = isset($_POST['carrera']) ? $conexion->real_escape_string(trim($_POST['carrera'])) : '';
+    case 'actualizar':
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') break;
 
+        $rfc = trim($_POST['rfc'] ?? '');
         if ($rfc === '') {
             echo json_encode(["ok" => false, "mensaje" => "RFC no especificado"]);
-            exit;
+            break;
         }
 
-        // Validar que el usuario existe
         $sqlCheck = "SELECT * FROM USUARIO WHERE RFC = '$rfc'";
         $resCheck = $conexion->query($sqlCheck);
         if (!$resCheck || $resCheck->num_rows === 0) {
             echo json_encode(["ok" => false, "mensaje" => "Usuario no encontrado"]);
-            exit;
+            break;
         }
 
-        // Construir consulta de actualización dinámicamente para evitar sobreescribir con campos vacíos
-        $camposActualizar = [];
-        if ($nombre !== '') $camposActualizar[] = "NOMBRE = '$nombre'";
-        if ($apellido_paterno !== '') $camposActualizar[] = "APELLIDO_PATERNO = '$apellido_paterno'";
-        if ($apellido_materno !== '') $camposActualizar[] = "APELLIDO_MATERNO = '$apellido_materno'";
-        if ($email !== '') $camposActualizar[] = "EMAIL = '$email'";
-        if ($rol !== '') $camposActualizar[] = "ROL = '$rol'";
-        if ($carrera !== '') $camposActualizar[] = "CARRERA = '$carrera'";
+        $campos = [];
+        foreach (['nombre', 'apellido_paterno', 'apellido_materno', 'email', 'rol', 'carrera'] as $campo) {
+            if (!empty($_POST[$campo])) {
+                $valor = $conexion->real_escape_string(trim($_POST[$campo]));
+                $campos[] = strtoupper($campo) . " = '$valor'";
+            }
+        }
 
-        if (count($camposActualizar) === 0) {
+        if (count($campos) === 0) {
             echo json_encode(["ok" => false, "mensaje" => "No hay datos para actualizar"]);
-            exit;
+            break;
         }
 
-        $sqlUpdate = "UPDATE USUARIO SET " . implode(", ", $camposActualizar) . " WHERE RFC = '$rfc'";
+        $sqlUpdate = "UPDATE USUARIO SET " . implode(", ", $campos) . " WHERE RFC = '$rfc'";
+        echo $conexion->query($sqlUpdate)
+            ? json_encode(["ok" => true, "mensaje" => "Usuario actualizado correctamente"])
+            : json_encode(["ok" => false, "mensaje" => "Error al actualizar: " . $conexion->error]);
+        break;
 
-        if ($conexion->query($sqlUpdate)) {
-            echo json_encode(["ok" => true, "mensaje" => "Usuario actualizado correctamente"]);
-        } else {
-            echo json_encode(["ok" => false, "mensaje" => "Error al actualizar: " . $conexion->error]);
-        }
-        exit;
-    }
+    // =======================
+    // DEFAULT
+    // =======================
+    default:
+        echo json_encode(["ok" => false, "mensaje" => "Acción no válida"]);
+        break;
 }
-
-echo json_encode(["ok" => false, "mensaje" => "Acción no válida"]);
-exit;
 ?>
