@@ -39,8 +39,26 @@ function cargarUsuarios() {
                         <td>${u.rol}</td>
                         <td>${u.carrera || ''}</td>
                         <td>
-                            <button onclick="editarUsuario('${u.rfc}')">Editar</button>
-                            <button onclick="eliminarUsuario('${u.rfc}')">Eliminar</button>
+                            <button onclick="editarUsuario('${u.rfc}')" style="background-color:rgb(231, 173, 0);
+                                                                        color: white;
+                                                                        border: none;
+                                                                        padding: 7px 16px;
+                                                                        font-size: 13px;
+                                                                        border-radius: 5px;
+                                                                        cursor: pointer;
+                                                                        transition: background-color 0.25s ease;
+                                                                        text-decoration: none;
+                                                                        display: inline-block;">Editar</button>
+                            <button onclick="eliminarUsuario('${u.rfc}')" style="background-color: #c0392b;
+                                                                        color: white;
+                                                                        border: none;
+                                                                        padding: 7px 16px;
+                                                                        font-size: 13px;
+                                                                        border-radius: 5px;
+                                                                        cursor: pointer;
+                                                                        transition: background-color 0.25s ease;
+                                                                        text-decoration: none;
+                                                                        display: inline-block;">Eliminar</button>
                         </td>
                     </tr>`;
                 tbody.innerHTML += fila;

@@ -1,0 +1,132 @@
+/* Estilo general para esta página de respaldos */
+h2 {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 18px;
+    color: #2c3e50;
+    margin: 20px auto 15px auto;
+    max-width: 1100px;
+    border-bottom: 2px solid #2c3e50;
+    padding-bottom: 5px;
+}
+
+.backup-container {
+    max-width: 1100px;
+    margin: 0 auto 30px auto;
+    padding: 15px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 13px;
+    color: #333;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    justify-content: space-between;
+}
+
+/* Cada sección de respaldo */
+.backup-section {
+    flex: 1 1 320px; /* ancho base, flexible para pantallas */
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px 20px;
+    box-shadow: 0 0 5px rgba(44, 62, 80, 0.15);
+    min-width: 300px;
+}
+
+.backup-section h3 {
+    font-size: 15px;
+    color: #2c3e50;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+}
+
+/* Botones */
+.btn {
+    background-color: #2c3e50;
+    color: white;
+    border: none;
+    padding: 7px 16px;
+    font-size: 13px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn:hover {
+    background-color: #1a252f;
+}
+
+.btn-restore {
+    background-color: #c0392b;
+}
+
+.btn-restore:hover {
+    background-color: #992d22;
+}
+
+/* Input file en el formulario de restaurar */
+.backup-section input[type="file"] {
+    margin-bottom: 10px;
+    font-size: 13px;
+    padding: 4px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Tabla de respaldos */
+.tabla-respaldos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12.5px;
+    color: #333;
+}
+
+.tabla-respaldos thead {
+    background-color: #2c3e50;
+    color: #fff;
+}
+
+.tabla-respaldos th,
+.tabla-respaldos td {
+    padding: 7px 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.tabla-respaldos tr:hover {
+    background-color: #f2f2f2;
+}
+
+/* Formularios dentro de tabla (botones de restaurar) */
+.tabla-respaldos form {
+    display: inline-block;
+    margin: 0;
+}
+
+/* Espaciado entre botones dentro de acciones */
+.tabla-respaldos td a.btn,
+.tabla-respaldos td form button.btn {
+    margin-right: 6px;
+    font-size: 12.5px;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+    .backup-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .backup-section {
+        min-width: 100%;
+    }
+}
