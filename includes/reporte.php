@@ -23,18 +23,7 @@ $anio = $_GET['anio'] ?? '';
 $sexo = $_GET['sexo'] ?? '';
 $titulado = $_GET['titulado'] ?? '';
 $tipo_informe = $_GET['tipo_informe'] ?? '';
-
-if (empty($_GET['periodo'])) {
-    $activo = $conexion->query("SELECT ID_PERIODO FROM PERIODO_ENCUESTA WHERE ACTIVO = 1 LIMIT 1")->fetch_assoc();
-    if ($activo) {
-        $periodo = $activo['ID_PERIODO'];
-        $_GET['periodo'] = $periodo;
-    } else {
-        $periodo = '';
-    }
-} else {
-    $periodo = $_GET['periodo'];
-}
+$periodo = $_GET['periodo'] ?? '';
 
 if ($isJefe) {
     $carrera = $carreraJefe;
@@ -75,7 +64,7 @@ $tiposInforme = [
     'detallado' => 'Reporte Detallado por Egresado',
     'participacion' => 'Estado de Participación',
     'por_seccion' => 'Informe por Sección',
-    'historico' => 'Comparativo Histórico',
+    'historico' => 'Histórico Acumulado',
 ];
 ?>
 
@@ -117,7 +106,7 @@ $tiposInforme = [
 
         <label>Año de Egreso:
             <select name="anio">
-                <option value="">-- Todos --</option>
+                <option value="">Todos</option>
                 <?php foreach ($anios as $a): ?>
                     <option value="<?= $a['anio'] ?>" <?= $anio == $a['anio'] ? 'selected' : '' ?>>
                         <?= $a['anio'] ?>
@@ -136,7 +125,7 @@ $tiposInforme = [
 
         <label>Titulado:
             <select name="titulado">
-                <option value="">-- Todos --</option>
+                <option value="">Todos</option>
                 <option value="1" <?= $titulado === '1' ? 'selected' : '' ?>>Sí</option>
                 <option value="0" <?= $titulado === '0' ? 'selected' : '' ?>>No</option>
             </select>
@@ -144,7 +133,7 @@ $tiposInforme = [
 
         <label>Periodo de Encuesta:
             <select name="periodo">
-                <option value="">-- Todos --</option>
+                <option value="">Todos</option>
                 <?php foreach ($periodos as $p): ?>
                     <option value="<?= $p['ID_PERIODO'] ?>" <?= $periodo == $p['ID_PERIODO'] ? 'selected' : '' ?>>
                         <?= htmlspecialchars($p['NOMBRE']) ?>

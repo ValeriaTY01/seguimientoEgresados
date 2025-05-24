@@ -50,8 +50,9 @@ $mapTipoInforme = [
     'detallado' => 'Reporte Detallado por Egresado',
     'participacion' => 'Estado de Participación',
     'por_seccion' => 'Informe por Sección',
-    'historico' => 'Comparativo Histórico',
+    'historico' => 'Histórico Acumulado', // <-- aquí
 ];
+
 
 $tipoInformeEtiqueta = $mapTipoInforme[$filtros['tipo_informe']] ?? 'Desconocido';
 
@@ -88,7 +89,7 @@ switch ($filtros['tipo_informe']) {
 
     case 'historico':
         include 'reportes/historico.php';
-        generarInformeHistorico($conexion, $carrera, $filtros);
+        generarInformeHistoricoAcumulado($conexion, $carrera, $filtros);
         break;
 
     default:

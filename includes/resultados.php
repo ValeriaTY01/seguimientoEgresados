@@ -21,6 +21,7 @@ $carrera = $_GET['carrera'] ?? '';
 $anio = $_GET['anio'] ?? '';
 $sexo = $_GET['sexo'] ?? '';
 $titulado = $_GET['titulado'] ?? '';
+$periodo = $_GET['periodo'] ?? ''; // Aquí ya no se seleccionará automáticamente el periodo activo
 
 if ($isJefeDepartamento) {
     $carrera = $carreraJefe;
@@ -28,15 +29,6 @@ if ($isJefeDepartamento) {
 }
 
 $periodos = $conexion->query("SELECT ID_PERIODO, NOMBRE FROM PERIODO_ENCUESTA ORDER BY FECHA_INICIO DESC")->fetch_all(MYSQLI_ASSOC);
-
-$periodo = $_GET['periodo'] ?? '';
-if (!$periodo && !empty($periodos)) {
-    $activo = $conexion->query("SELECT ID_PERIODO FROM PERIODO_ENCUESTA WHERE ACTIVO = 1 LIMIT 1")->fetch_assoc();
-    if ($activo) {
-        $periodo = $activo['ID_PERIODO'];
-        $_GET['periodo'] = $periodo;
-    }
-}
 
 $carreraLower = strtolower($carrera);
 $esCarreraQuimica = in_array($carreraLower, ['ingeniería química', 'ingeniería bioquímica']);
@@ -69,49 +61,95 @@ function obtenerPreguntasPorSeccion($conexion, $idSeccion) {
 }
 
 function obtenerResultadosPregunta($conexion, $idPregunta, $filtros) {
-    $condiciones = "";
     $carrera = isset($filtros['carrera']) ? $conexion->real_escape_string($filtros['carrera']) : '';
     $anio = isset($filtros['anio']) ? intval($filtros['anio']) : 0;
     $sexo = isset($filtros['sexo']) ? $conexion->real_escape_string($filtros['sexo']) : '';
     $titulado = isset($filtros['titulado']) && $filtros['titulado'] !== '' ? intval($filtros['titulado']) : null;
+    $periodo = isset($filtros['periodo']) && $filtros['periodo'] !== '' ? intval($filtros['periodo']) : null;
+
+    // Condiciones para alias e (consulta principal)
+    $condicionesEgresado = "1=1";
+    // Condiciones para alias e2 (subquery)
+    $condicionesEgresadoSub = "1=1";
 
     if (!empty($carrera)) {
-        $condiciones .= " AND e.CARRERA = '$carrera'";
+        $condicionesEgresado .= " AND e.CARRERA = '$carrera'";
+        $condicionesEgresadoSub .= " AND e2.CARRERA = '$carrera'";
     }
     if (!empty($anio)) {
-        $condiciones .= " AND YEAR(e.FECHA_EGRESO) = $anio";
+        $condicionesEgresado .= " AND YEAR(e.FECHA_EGRESO) = $anio";
+        $condicionesEgresadoSub .= " AND YEAR(e2.FECHA_EGRESO) = $anio";
     }
     if (!empty($sexo)) {
-        $condiciones .= " AND e.SEXO = '$sexo'";
+        $condicionesEgresado .= " AND e.SEXO = '$sexo'";
+        $condicionesEgresadoSub .= " AND e2.SEXO = '$sexo'";
     }
     if ($titulado !== null) {
-        $condiciones .= " AND e.TITULADO = $titulado";
-    }
-    $periodo = isset($filtros['periodo']) && $filtros['periodo'] !== '' ? intval($filtros['periodo']) : null;
-    if ($periodo !== null) {
-        $condiciones .= " AND cr.ID_PERIODO = $periodo";
+        $condicionesEgresado .= " AND e.TITULADO = $titulado";
+        $condicionesEgresadoSub .= " AND e2.TITULADO = $titulado";
     }
 
-    $sql = "
-        SELECT 
-            o.TEXTO AS opcion,
-            COUNT(r.ID_OPCION) AS frecuencia,
-            (
-                SELECT COUNT(*) 
-                FROM RESPUESTA r2
-                JOIN CUESTIONARIO_RESPUESTA cr2 ON r2.ID_CUESTIONARIO = cr2.ID_CUESTIONARIO
-                JOIN EGRESADO e2 ON cr2.CURP = e2.CURP
-                WHERE r2.ID_PREGUNTA = $idPregunta $condiciones
-            ) AS total
-        FROM OPCION_RESPUESTA o
-        LEFT JOIN RESPUESTA r ON o.ID_OPCION = r.ID_OPCION
-        LEFT JOIN CUESTIONARIO_RESPUESTA cr ON r.ID_CUESTIONARIO = cr.ID_CUESTIONARIO
-        LEFT JOIN EGRESADO e ON cr.CURP = e.CURP
-        WHERE o.ID_PREGUNTA = $idPregunta
-        $condiciones
-        GROUP BY o.ID_OPCION, o.TEXTO
-        ORDER BY o.TEXTO
-    ";
+    if ($periodo !== null) {
+        // Consulta para periodo específico
+        $sql = "
+            SELECT 
+                o.TEXTO AS opcion,
+                COUNT(r.ID_OPCION) AS frecuencia,
+                (
+                    SELECT COUNT(*) 
+                    FROM RESPUESTA r2
+                    JOIN CUESTIONARIO_RESPUESTA cr2 ON r2.ID_CUESTIONARIO = cr2.ID_CUESTIONARIO
+                    JOIN EGRESADO e2 ON cr2.CURP = e2.CURP
+                    WHERE r2.ID_PREGUNTA = $idPregunta
+                    AND cr2.ID_PERIODO = $periodo
+                    AND $condicionesEgresadoSub
+                ) AS total
+            FROM OPCION_RESPUESTA o
+            LEFT JOIN RESPUESTA r ON o.ID_OPCION = r.ID_OPCION
+            LEFT JOIN CUESTIONARIO_RESPUESTA cr ON r.ID_CUESTIONARIO = cr.ID_CUESTIONARIO
+            LEFT JOIN EGRESADO e ON cr.CURP = e.CURP
+            WHERE o.ID_PREGUNTA = $idPregunta
+            AND cr.ID_PERIODO = $periodo
+            AND $condicionesEgresado
+            GROUP BY o.ID_OPCION, o.TEXTO
+            ORDER BY o.TEXTO
+        ";
+    } else {
+        // Modo acumulado: obtener sólo última respuesta por CURP
+        $sql = "
+            SELECT 
+                o.TEXTO AS opcion,
+                COUNT(r.ID_OPCION) AS frecuencia,
+                (
+                    SELECT COUNT(*)
+                    FROM (
+                        SELECT ult.CURP
+                        FROM (
+                            SELECT CURP, MAX(ID_CUESTIONARIO) AS ULTIMO
+                            FROM CUESTIONARIO_RESPUESTA
+                            GROUP BY CURP
+                        ) ult
+                        JOIN CUESTIONARIO_RESPUESTA cr2 ON cr2.CURP = ult.CURP AND cr2.ID_CUESTIONARIO = ult.ULTIMO
+                        JOIN EGRESADO e2 ON cr2.CURP = e2.CURP
+                        WHERE $condicionesEgresadoSub
+                    ) AS total_egresados
+                ) AS total
+            FROM OPCION_RESPUESTA o
+            LEFT JOIN RESPUESTA r ON o.ID_OPCION = r.ID_OPCION
+            LEFT JOIN CUESTIONARIO_RESPUESTA cr ON r.ID_CUESTIONARIO = cr.ID_CUESTIONARIO
+            LEFT JOIN (
+                SELECT CURP, MAX(ID_CUESTIONARIO) AS ULTIMO
+                FROM CUESTIONARIO_RESPUESTA
+                GROUP BY CURP
+            ) ult ON ult.CURP = cr.CURP AND ult.ULTIMO = cr.ID_CUESTIONARIO
+            LEFT JOIN EGRESADO e ON cr.CURP = e.CURP
+            WHERE o.ID_PREGUNTA = $idPregunta
+            AND ult.ULTIMO IS NOT NULL
+            AND $condicionesEgresado
+            GROUP BY o.ID_OPCION, o.TEXTO
+            ORDER BY o.TEXTO
+        ";
+    }
 
     return $conexion->query($sql)->fetch_all(MYSQLI_ASSOC);
 }
@@ -121,7 +159,6 @@ $aniosEgreso = $conexion->query("
     FROM EGRESADO
     ORDER BY anio DESC
 ")->fetch_all(MYSQLI_ASSOC);
-
 ?>
 
 <!DOCTYPE html>
@@ -135,16 +172,6 @@ $aniosEgreso = $conexion->query("
 </head>
 <body>
 <h1>Resultados Estadísticos de Encuestas</h1>
-<?php
-$nombrePeriodo = '';
-if (!empty($periodo)) {
-    $res = $conexion->query("SELECT NOMBRE FROM PERIODO_ENCUESTA WHERE ID_PERIODO = $periodo")->fetch_assoc();
-    if ($res) {
-        $nombrePeriodo = $res['NOMBRE'];
-        echo "<h3>Mostrando resultados del período: " . htmlspecialchars($nombrePeriodo) . "</h3>";
-    }
-}
-?>
 <form method="GET" class="filtros-form">
     Carrera: 
     <select name="carrera">
